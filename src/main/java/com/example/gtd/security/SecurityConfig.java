@@ -20,6 +20,7 @@ public class SecurityConfig {
       .csrf(csrf -> csrf.disable())
       .httpBasic(withDefaults())
       .authorizeHttpRequests(auth -> auth
+        .requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll()
         .anyRequest().authenticated()
       );
     return http.build();
