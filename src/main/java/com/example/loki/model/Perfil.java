@@ -10,7 +10,7 @@ import lombok.Data;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Data
-public class Perfil {
+public abstract class Perfil {
     @Id
     @GeneratedValue
     private Long id;
