@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.loki.model.Cliente;
-import com.example.loki.repository.PerfilRepository;
+import com.example.loki.repository.ClienteRepository;
 
 @RestController
 @RequestMapping("/api/clientes")
 public class ClienteController {
   @Autowired
-  private PerfilRepository repositorio;
+  private ClienteRepository repositorio;
 
   @PostMapping
   public ResponseEntity<?> crear(@RequestBody Cliente cliente) {

@@ -6,7 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.loki.model.Vendedor;
-import com.example.loki.repository.PerfilRepository;
+import com.example.loki.repository.VendedorRepository;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/api/vendedores")
 public class VendedorController {
   @Autowired
-  private PerfilRepository repositorio;
+  private VendedorRepository repositorio;
 
   @PostMapping
   public ResponseEntity<?> crear(@RequestBody Vendedor vendedor) {
