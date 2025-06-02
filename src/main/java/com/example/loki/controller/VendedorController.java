@@ -1,14 +1,12 @@
 package com.example.loki.controller;
 
 import com.example.loki.exceptions.PerfilNotFound;
+import com.example.loki.model.Vendedor;
 import com.example.loki.service.VendedorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import com.example.loki.model.Vendedor;
 
 import java.util.List;
 
