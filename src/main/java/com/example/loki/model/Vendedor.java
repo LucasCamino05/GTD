@@ -1,11 +1,31 @@
 package com.example.loki.model;
 
 import jakarta.persistence.Entity;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import jakarta.persistence.Table;
+import lombok.*;
 
 @Entity
 @Data @EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString(callSuper = true)
+@Table( name = "sellers")
+
 public class Vendedor extends Perfil {
   private String cvu;
+  private String alias;
+
+  public Vendedor(String nombre, String apellido, String correo, String cvu, String alias) {
+    super(nombre, apellido, correo);
+    this.cvu = cvu;
+    this.alias = alias;
+  }
+
+//  @Override
+//  public String toString() {
+//    return "Vendedor{" + super.toString()+
+//            "cvu='" + cvu + '\'' +
+//            ", alias='" + alias + '\'' +
+//            '}';
+//  }
 }
