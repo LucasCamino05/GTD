@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,13 +29,18 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Producto> getProductById(@PathVariable Long id){
-        return service.getProductById(id);
+    public ProductoResponseDTO getProductById(@PathVariable Long id){
+        try{
+            return service.getProductById(id);
+        }catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 
     @PostMapping("/add")
-    public ResponseEntity<ProductoResponseDTO> createProduct(@RequestBody ProductoRequestDTO dto){
-        ProductoResponseDTO guardado = service.createProduct(dto);
+    public ResponseEntity<ProductoResponseDTO> createProduct(@RequestBody ProductoRequestDTO nuevo){
+        ProductoResponseDTO guardado = service.createProduct(nuevo);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(guardado);
     }

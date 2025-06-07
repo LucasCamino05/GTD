@@ -25,16 +25,6 @@ public class Producto {
     private String categoria;
     @Column(nullable = false)
     private Double precio;
-    @Column(nullable = false)
     private LocalDate fechaAlta;
 
-    public Producto(String nombre, String marca, String origen, String descripcion, String categoria, Double precio) {
-        this.nombre = nombre;
-        this.marca = marca;
-        this.origen = origen;
-        this.descripcion = descripcion;
-        this.categoria = categoria;
-        this.precio = precio;
-        fechaAlta = LocalDate.now();
-    }
 }

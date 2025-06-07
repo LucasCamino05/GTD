@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface ProductoService {
     List<ProductoResponseDTO> getAllProducts();
-    Optional<Producto> getProductById(Long id);
+    ProductoResponseDTO getProductById(Long id);
     ProductoResponseDTO createProduct(ProductoRequestDTO dto);
     void deleteProduct(Long id);
     //Producto updateProduct();

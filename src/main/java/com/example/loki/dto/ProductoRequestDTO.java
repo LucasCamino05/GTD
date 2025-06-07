@@ -14,8 +14,12 @@ public class ProductoRequestDTO {
     private String nombre;
     @NotBlank
     private String marca;
+    @NotBlank
+    private String origen;
+    @NotBlank
+    private String descripcion;
+    @NotBlank
+    private String categoria;
     @Positive
     private Double precio;
-
-
 }

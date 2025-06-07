@@ -12,7 +12,6 @@ public interface ProductoMapper {
     Producto toEntity(ProductoRequestDTO productoRequestDTO);
     ProductoResponseDTO toDTOResponse(Producto producto);
 
-    Producto toEntity(ProductoResponseDTO productoResponseDTO);
-    ProductoRequestDTO toDTORequest(Producto producto);
-
+//    Producto toEntity(ProductoResponseDTO productoResponseDTO);
+//    ProductoRequestDTO toDTORequest(Producto producto);
 }

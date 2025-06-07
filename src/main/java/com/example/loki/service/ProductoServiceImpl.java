@@ -8,6 +8,7 @@ import com.example.loki.repository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,20 +27,26 @@ public class ProductoServiceImpl implements ProductoService {
     public List<ProductoResponseDTO> getAllProducts() {
         List<Producto> productos =  repository.findAll();
         return productos.stream()
-                .map(p -> productoMapper.toDTOResponse(p))
+                .map(productoMapper::toDTOResponse)
                 .toList();
     }
 
     @Override
-    public Optional<Producto> getProductById(Long id) {
-        return repository.findById(id);
+    public ProductoResponseDTO getProductById(Long id) {
+        Optional<Producto> producto = repository.streamById(id);
+        if(producto.isPresent()) {
+            return productoMapper.toDTOResponse(producto.get());
+        }else{
+            throw new IllegalArgumentException("Producto no encontrado");
+        }
     }
 
     @Override
-    public ProductoResponseDTO createProduct(ProductoRequestDTO dto) {
-        Producto producto = productoMapper.toEntity(dto);
-        repository.save(producto);
-        return productoMapper.toDTOResponse(producto);
+    public ProductoResponseDTO createProduct(ProductoRequestDTO nuevo) {
+        Producto producto = productoMapper.toEntity(nuevo);
+        producto.setFechaAlta(LocalDate.now());
+        Producto guardado = repository.save(producto);
+        return productoMapper.toDTOResponse(guardado);
     }
 
     @Override
