@@ -1,5 +1,7 @@
 package com.example.loki.model;
 
+import com.example.loki.annotations.NullOrNotBlank;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.*;
@@ -12,7 +14,9 @@ import lombok.*;
 @Table( name = "sellers")
 
 public class Vendedor extends Perfil {
+  @NullOrNotBlank(message = "Este campo no puede estar vacio")
   private String cvu;
+  @NullOrNotBlank(message = "Este campo no puede estar vacio")
   private String alias;
 
   public Vendedor(String nombre, String apellido, String correo, String cvu, String alias) {
