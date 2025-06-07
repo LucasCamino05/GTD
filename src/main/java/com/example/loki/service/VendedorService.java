@@ -47,19 +47,8 @@ public class VendedorService {
 
   public void validarVendedor(Vendedor vendedor) {
     Set<ConstraintViolation<Vendedor>> errores_validacion = validator.validate(vendedor);
-
     if (!errores_validacion.isEmpty()) {
-      StringBuilder mensajes_de_error = new StringBuilder();
-      for (ConstraintViolation<Vendedor> error : errores_validacion) {
-        mensajes_de_error
-            .append(error.getPropertyPath())
-            .append(": ")
-            .append(error.getMessage())
-            .append("\n");
-      }
-      throw new ConstraintViolationException(
-          "Errores de validación: \n" + mensajes_de_error.toString(),
-          errores_validacion);
+      throw new ConstraintViolationException(null, errores_validacion);
     }
   }
 }

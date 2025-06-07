@@ -101,8 +101,25 @@ public class VendedorController {
         .contentType(MediaType.APPLICATION_JSON)
         .body(respuesta);
   }
+
+  @ExceptionHandler()
   public ResponseEntity<?> manejadorUsuarioInvalido(ConstraintViolationException e) {
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    Map<String, Object> respuesta = new HashMap<>();
+    Map<String, String> errores = new HashMap<>();
+
+    e.getConstraintViolations().forEach(violation -> {
+      String atributo = violation.getPropertyPath().toString();
+      String mensaje = violation.getMessage();
+      errores.put(atributo, mensaje);
+    });
+
+    respuesta.put("status", "error");
+    respuesta.put("message", "datos invalidos");
+    respuesta.put("errors", errores);
+
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(respuesta);
   }
 
 }
