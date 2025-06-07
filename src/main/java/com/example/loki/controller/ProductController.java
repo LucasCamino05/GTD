@@ -1,9 +1,7 @@
 package com.example.loki.controller;
 
-import com.example.loki.dto.ProductoRequestDTO;
-import com.example.loki.dto.ProductoResponseDTO;
-import com.example.loki.mappers.ProductoMapper;
-import com.example.loki.model.Producto;
+import com.example.loki.model.dto.ProductoRequestDTO;
+import com.example.loki.model.dto.ProductoResponseDTO;
 import com.example.loki.service.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 @RestController
 @RequestMapping("loki/v1/products")
@@ -29,13 +27,13 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ProductoResponseDTO getProductById(@PathVariable Long id){
+    public ResponseEntity<?> getProductById(@PathVariable Long id){
         try{
-            return service.getProductById(id);
+            ProductoResponseDTO producto = service.getProductById(id);
+            return ResponseEntity.ok(producto);
         }catch (IllegalArgumentException e){
-            System.out.println(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        return null;
     }
 
     @PostMapping("/add")
@@ -49,5 +47,17 @@ public class ProductController {
     public ResponseEntity deleteProduct(@PathVariable Long id){
         service.deleteProduct(id);
         return ResponseEntity.ok("Producto " + id + " eliminado.");
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity updateProductoById(
+            @PathVariable Long id,
+            @RequestBody Map<String, Object> modificacion){
+        try{
+            service.updateProducto(id, modificacion);
+            return ResponseEntity.ok("Producto modificado correctamente.");
+        }catch(Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

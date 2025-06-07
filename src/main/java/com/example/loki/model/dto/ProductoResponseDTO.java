@@ -1,4 +1,4 @@
-package com.example.loki.dto;
+package com.example.loki.model.dto;
 
 import lombok.Getter;
 import lombok.Setter;

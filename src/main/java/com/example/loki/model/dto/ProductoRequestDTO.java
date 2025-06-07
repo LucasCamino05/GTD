@@ -1,4 +1,4 @@
-package com.example.loki.dto;
+package com.example.loki.model.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
@@ -20,6 +20,8 @@ public class ProductoRequestDTO {
     private String descripcion;
     @NotBlank
     private String categoria;
-    @Positive
+    @NotBlank @Positive
     private Double precio;
+    @NotBlank @Positive
+    private Integer stock;
 }

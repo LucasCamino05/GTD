@@ -1,9 +1,9 @@
-package com.example.loki.mappers;
+package com.example.loki.model.mappers;
 
 
-import com.example.loki.dto.ProductoRequestDTO;
-import com.example.loki.dto.ProductoResponseDTO;
-import com.example.loki.model.Producto;
+import com.example.loki.model.dto.ProductoRequestDTO;
+import com.example.loki.model.dto.ProductoResponseDTO;
+import com.example.loki.model.entities.Producto;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

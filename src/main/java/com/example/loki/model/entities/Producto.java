@@ -1,4 +1,4 @@
-package com.example.loki.model;
+package com.example.loki.model.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -25,6 +25,7 @@ public class Producto {
     private String categoria;
     @Column(nullable = false)
     private Double precio;
+    @Column(nullable = false)
+    private Integer stock;
     private LocalDate fechaAlta;
-
 }
