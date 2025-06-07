@@ -6,6 +6,8 @@ import com.example.loki.service.VendedorService;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jakarta.validation.ConstraintViolationException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,11 +41,13 @@ public class VendedorController {
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<?> modificar(@PathVariable Long id, @RequestBody Map<String, Object> modificacion) throws PerfilNotFound {
+  public ResponseEntity<?> modificar(@PathVariable Long id, @RequestBody Map<String, Object> modificacion)
+      throws PerfilNotFound {
     Optional<Vendedor> vendedor = vendedorService.getVendedorById(id);
     if (vendedor.isPresent()) {
       try {
         objectMapper.updateValue(vendedor.get(), modificacion);
+        vendedorService.validarVendedor(vendedor.get());
       } catch (JsonMappingException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
       }
@@ -51,7 +55,8 @@ public class VendedorController {
       return ResponseEntity.ok("Vendedor modificado");
     } else {
       throw new PerfilNotFound("Usuario no encontrado");
-      // return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vendedor no encontrado");
+      // return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vendedor no
+      // encontrado");
     }
   }
 
@@ -71,4 +76,10 @@ public class VendedorController {
   public ResponseEntity<String> manejadorPerfilNotFound(PerfilNotFound ex) {
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
   }
+
+  @ExceptionHandler()
+  public ResponseEntity<?> manejadorUsuarioInvalido(ConstraintViolationException e) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+  }
+
 }
