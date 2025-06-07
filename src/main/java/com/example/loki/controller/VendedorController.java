@@ -66,7 +66,7 @@ public class VendedorController {
   }
 
   @PostMapping
-  public ResponseEntity<?> crear(@RequestBody Vendedor vendedor) {
+  public ResponseEntity<?> crear(@RequestBody @Valid Vendedor vendedor) {
     vendedorService.saveVendedor(vendedor);
     return ResponseEntity.ok("Vendedor creado");
   }
