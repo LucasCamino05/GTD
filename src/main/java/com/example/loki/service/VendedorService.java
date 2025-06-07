@@ -3,34 +3,63 @@ package com.example.loki.service;
 import com.example.loki.exceptions.PerfilNotFound;
 import com.example.loki.model.Vendedor;
 import com.example.loki.repository.VendedorRepository;
+
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+
+import jakarta.validation.Validator;
 
 @Service
 public class VendedorService {
-    private final VendedorRepository vendedorRepository;
+  private final VendedorRepository vendedorRepository;
 
-    public VendedorService(VendedorRepository vendedorRepository) {
-        this.vendedorRepository = vendedorRepository;
-    }
+  @Autowired
+  private Validator validator;
 
-    public List<Vendedor> getVendedor(){
-        return vendedorRepository.findAll();
-    }
+  public VendedorService(VendedorRepository vendedorRepository) {
+    this.vendedorRepository = vendedorRepository;
+  }
 
-    public Optional<Vendedor> getVendedorById(Long id){
-        return vendedorRepository.findById(id);
-    }
+  public List<Vendedor> getVendedor() {
+    return vendedorRepository.findAll();
+  }
 
-    public void saveVendedor(Vendedor vendedor){
-        vendedorRepository.save(vendedor);
+  public Optional<Vendedor> getVendedorById(Long id) {
+    return vendedorRepository.findById(id);
+  }
+
+  public void saveVendedor(Vendedor vendedor) {
+    vendedorRepository.save(vendedor);
+  }
+
+  public void deleteVendedor(Long id) throws PerfilNotFound {
+    if (getVendedorById(id).isEmpty()) {
+      throw new PerfilNotFound("Usuario no encontrado");
     }
-    public void deleteVendedor(Long id) throws PerfilNotFound{
-        if(getVendedorById(id).isEmpty()){
-            throw new PerfilNotFound("Usuario no encontrado");
-        }
-        vendedorRepository.deleteById(id);
+    vendedorRepository.deleteById(id);
+  }
+
+  public void validarVendedor(Vendedor vendedor) {
+    Set<ConstraintViolation<Vendedor>> errores_validacion = validator.validate(vendedor);
+
+    if (!errores_validacion.isEmpty()) {
+      StringBuilder mensajes_de_error = new StringBuilder();
+      for (ConstraintViolation<Vendedor> error : errores_validacion) {
+        mensajes_de_error
+            .append(error.getPropertyPath())
+            .append(": ")
+            .append(error.getMessage())
+            .append("\n");
+      }
+      throw new ConstraintViolationException(
+          "Errores de validación: \n" + mensajes_de_error.toString(),
+          errores_validacion);
     }
+  }
 }
