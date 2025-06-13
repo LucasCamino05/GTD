@@ -11,7 +11,12 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 public class Producto {
-    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "producto_seq_gen")
+    @SequenceGenerator(
+            name = "producto_seq_gen",
+            sequenceName = "producto_seq",
+            allocationSize = 1
+    )
     private Long id;
     @Column(nullable = false)
     private String nombre;
