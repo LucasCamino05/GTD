@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("loki/v1/products")
+@RequestMapping("loki/v1/productos")
 public class ProductController {
     private final ProductoService service;
 

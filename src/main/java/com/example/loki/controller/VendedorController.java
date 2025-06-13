@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/vendedores")
+@RequestMapping("/loki/v1/vendedores")
 public class VendedorController {
 
   @Autowired
