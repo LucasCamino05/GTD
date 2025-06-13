@@ -1,6 +1,7 @@
 package com.example.loki.service;
 
 import com.example.loki.exceptions.PerfilNotFound;
+import com.example.loki.model.dto.VendedorRequestDTO;
 import com.example.loki.model.dto.VendedorResponseDTO;
 import com.example.loki.model.mappers.VendedorMapper;
 import com.example.loki.model.Vendedor;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -41,8 +43,12 @@ public class VendedorService {
         return vendedorMapper.toDTO(vendedor);
     }
 
-    public void saveVendedor(Vendedor vendedor){
+    public VendedorResponseDTO saveVendedor(VendedorRequestDTO vendedorRequestDTO){
+        vendedorRequestDTO.setFecha_alta(LocalDate.now());
+        Vendedor vendedor = vendedorMapper.toEntity(vendedorRequestDTO);
+        VendedorResponseDTO vendedorResponseDTO = vendedorMapper.toDTO(vendedor);
         vendedorRepository.save(vendedor);
+        return vendedorResponseDTO;
     }
 
     public void deleteVendedor(Long id)
