@@ -3,11 +3,14 @@ package com.example.loki.controller;
 import com.example.loki.model.dto.ProductoRequestDTO;
 import com.example.loki.model.dto.ProductoResponseDTO;
 import com.example.loki.service.ProductoService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +40,17 @@ public class ProductController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<ProductoResponseDTO> createProduct(@RequestBody ProductoRequestDTO nuevo){
+    public ResponseEntity<?> createProduct(@Valid @RequestBody ProductoRequestDTO nuevo,
+                                                             BindingResult result){
+        if(result.hasErrors()){
+            Map<String, String> errores = new HashMap<>();
+            result.getFieldErrors().forEach(error ->
+                    errores.put(error.getField(), error.getDefaultMessage())
+            );
+
+            return ResponseEntity.badRequest().body(errores);
+        }
+
         ProductoResponseDTO guardado = service.createProduct(nuevo);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(guardado);
