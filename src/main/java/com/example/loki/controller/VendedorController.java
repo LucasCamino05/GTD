@@ -19,14 +19,13 @@ public class VendedorController {
 
   @GetMapping
   public List<String> getVendedor(){
-    return vendedorService.getVendedor()
+    return vendedorService.getVendedores()
             .stream().map(x -> x.toString())
             .toList();
   }
   @GetMapping("/{id}")
   public String getVendedorById(@PathVariable Long id) throws PerfilNotFound{
-    return vendedorService.getVendedorById(id)
-            .orElseThrow(() -> new PerfilNotFound("Usuario no encontrado"))
+    return vendedorService.getVendedor(id)
             .toString();
   }
 
