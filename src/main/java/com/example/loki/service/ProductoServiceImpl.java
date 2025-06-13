@@ -30,6 +30,7 @@ public class ProductoServiceImpl implements ProductoService {
     @Override
     public List<ProductoResponseDTO> getAllProducts() {
         List<Producto> productos =  repository.findAll();
+        System.out.println(productos);
         return productos.stream()
                 .map(productoMapper::toDTOResponse)
                 .toList();

@@ -19,13 +19,13 @@ public class ClienteController {
 
   @GetMapping
   public List<String> getCliente(){
-    return clienteService.getCliente()
+    return clienteService.getClientes()
             .stream().map(x-> x.toString())
             .toList();
   }
   @GetMapping("/{id}")
   public Cliente getClienteById(@PathVariable Long id) throws PerfilNotFound{
-    return clienteService.getClienteById(id).orElseThrow(() -> new PerfilNotFound("Usuario no encontrado"));
+    return clienteService.getCliente(id);
   }
 
   @PostMapping
