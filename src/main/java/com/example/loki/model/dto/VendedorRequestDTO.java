@@ -25,5 +25,4 @@ public class VendedorRequestDTO {
     private String cvu;
     @NotBlank(message = "El alias es obligatorio.")
     private String alias;
-    private LocalDate fecha_alta;
 }

@@ -44,8 +44,8 @@ public class VendedorService {
     }
 
     public VendedorResponseDTO saveVendedor(VendedorRequestDTO vendedorRequestDTO){
-        vendedorRequestDTO.setFecha_alta(LocalDate.now());
         Vendedor vendedor = vendedorMapper.toEntity(vendedorRequestDTO);
+        vendedor.setFecha_alta(LocalDate.now());
         VendedorResponseDTO vendedorResponseDTO = vendedorMapper.toDTO(vendedor);
         vendedorRepository.save(vendedor);
         return vendedorResponseDTO;
