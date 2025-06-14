@@ -6,11 +6,13 @@ import com.example.loki.service.ClienteService;
 
 import jakarta.validation.Valid;
 
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/clientes")
@@ -42,4 +44,17 @@ public class ClienteController {
     clienteService.deleteCliente(id);
     return ResponseEntity.ok("Eliminado con exito!");
   }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<?> modificar(@PathVariable Long id, @RequestBody Map<String, Object> modificacion)
+      throws PerfilNotFound, ConstraintViolationException {
+    try {
+      clienteService.updateCliente(id, modificacion);
+      return ResponseEntity.ok("Vendedor modificado");
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.badRequest().body(e.getMessage());
+    }
+    // otras excepeciones son manejadas por GlobalExceptionHandler y PerfilExceptionHandler
+  }
+
 }
