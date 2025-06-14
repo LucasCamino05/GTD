@@ -11,6 +11,10 @@ import jakarta.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import org.springframework.util.ReflectionUtils;
+import java.lang.reflect.Field;
+
+import java.util.Map;
 import java.util.Set;
 import java.util.List;
 import java.util.Optional;
@@ -52,6 +56,27 @@ public class ClienteService {
     if (!errores_validacion.isEmpty()) {
       throw new ConstraintViolationException(null, errores_validacion);
     }
+  }
+
+  public void updateCliente(Long id, Map<String, Object> modificacion)
+      throws PerfilNotFound, ConstraintViolationException {
+    Cliente cliente = getClienteById(id)
+        .orElseThrow(() -> new PerfilNotFound("Usuario no encontrado"));
+
+    if (modificacion.containsKey("id")) {
+      throw new IllegalArgumentException("No se puede modificar el id del cliente.");
+    }
+
+    modificacion.forEach((key, value) -> {
+      Field atributo = ReflectionUtils.findField(Cliente.class, key);
+      if (atributo != null) {
+        atributo.setAccessible(true);
+        ReflectionUtils.setField(atributo, cliente, value);
+      }
+    });
+
+    validateCliente(cliente);
+    saveCliente(cliente);
   }
 
 }
