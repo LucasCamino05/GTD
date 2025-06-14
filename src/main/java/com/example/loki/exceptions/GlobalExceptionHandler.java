@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 @ControllerAdvice(basePackageClasses = {VendedorController.class, ClienteController.class})
 // @ControllerAdvice // descomentar para que sea global
 public class GlobalExceptionHandler {
+  // este podria menejar cualquier @Valid si es global
   @ExceptionHandler
   public ResponseEntity<?> manejadorArgumentoInvalido(MethodArgumentNotValidException e) {
     Map<String, Object> respuesta = new HashMap<>();

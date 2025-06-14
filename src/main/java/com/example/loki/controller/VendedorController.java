@@ -1,26 +1,26 @@
 package com.example.loki.controller;
 
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.example.loki.exceptions.PerfilNotFound;
 import com.example.loki.model.Vendedor;
 import com.example.loki.service.VendedorService;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/vendedores")
@@ -47,22 +47,14 @@ public class VendedorController {
 
   @PutMapping("/{id}")
   public ResponseEntity<?> modificar(@PathVariable Long id, @RequestBody Map<String, Object> modificacion)
-      throws PerfilNotFound {
-    Optional<Vendedor> vendedor = vendedorService.getVendedorById(id);
-    if (vendedor.isPresent()) {
-      try {
-        objectMapper.updateValue(vendedor.get(), modificacion);
-        vendedorService.validarVendedor(vendedor.get());
-      } catch (JsonMappingException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-      }
-      vendedorService.saveVendedor(vendedor.get());
+      throws PerfilNotFound, ConstraintViolationException {
+    try {
+      vendedorService.modificarVendedor(id, modificacion);
       return ResponseEntity.ok("Vendedor modificado");
-    } else {
-      throw new PerfilNotFound("Usuario no encontrado");
-      // return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vendedor no
-      // encontrado");
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.badRequest().body(e.getMessage());
     }
+    // otras excepeciones son manejadas por GlobalExceptionHandler y PerfilExceptionHandler
   }
 
   @PostMapping
