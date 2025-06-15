@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Data @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
@@ -15,8 +17,8 @@ public class Vendedor extends Perfil {
   private String cvu;
   private String alias;
 
-  public Vendedor(String nombre, String apellido, String correo, String cvu, String alias) {
-    super(nombre, apellido, correo);
+  public Vendedor(String nombre, String apellido, String correo, LocalDate fecha_alta, String cvu, String alias) {
+    super(nombre, apellido, correo, fecha_alta);
     this.cvu = cvu;
     this.alias = alias;
   }

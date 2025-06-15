@@ -2,12 +2,16 @@ package com.example.loki.service;
 
 import com.example.loki.exceptions.PerfilNotFound;
 import com.example.loki.model.Cliente;
+import com.example.loki.model.dto.ClienteRequestDTO;
+import com.example.loki.model.dto.ClienteResponseDTO;
+import com.example.loki.model.mappers.ClienteMapper;
 import com.example.loki.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -15,22 +19,28 @@ import java.util.Map;
 public class ClienteService {
 
     private final ClienteRepository repository;
+    private final ClienteMapper clienteMapper;
 
     @Autowired
-    public ClienteService(ClienteRepository repository) {
+    public ClienteService(ClienteRepository repository, ClienteMapper clienteMapper) {
         this.repository = repository;
+        this.clienteMapper = clienteMapper;
     }
 
-    public List<Cliente> getClientes(){
-        return repository.findAll();
+    public List<ClienteResponseDTO> getClientes(){
+        return repository.findAll().stream().map(clienteMapper::ClientetoDTO).toList();
     }
 
-    public Cliente getCliente(Long id) throws PerfilNotFound{
-        return getClienteById(id);
+    public ClienteResponseDTO getCliente(Long id) throws PerfilNotFound{
+        Cliente cliente = getClienteById(id);
+        return clienteMapper.ClientetoDTO(cliente);
     }
 
-    public void saveCliente(Cliente cliente){
+    public ClienteResponseDTO saveCliente(ClienteRequestDTO clienteRequestDTO){
+        Cliente cliente = clienteMapper.ClienteDTOtoEntity(clienteRequestDTO);
+        cliente.setFecha_alta(LocalDate.now());
         repository.save(cliente);
+        return clienteMapper.ClientetoDTO(cliente);
     }
 
     public void deleteCliente(Long id)

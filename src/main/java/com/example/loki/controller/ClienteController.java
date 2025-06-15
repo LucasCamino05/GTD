@@ -2,13 +2,19 @@ package com.example.loki.controller;
 
 import com.example.loki.exceptions.PerfilNotFound;
 import com.example.loki.model.Cliente;
+import com.example.loki.model.dto.ClienteRequestDTO;
+import com.example.loki.model.dto.ClienteResponseDTO;
 import com.example.loki.service.ClienteService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("loki/v1/clientes")
@@ -18,20 +24,26 @@ public class ClienteController {
   private ClienteService clienteService;
 
   @GetMapping
-  public List<String> getCliente(){
+  public List<ClienteResponseDTO> getCliente(){
     return clienteService.getClientes()
-            .stream().map(x-> x.toString())
+            .stream()
             .toList();
   }
   @GetMapping("/{id}")
-  public Cliente getClienteById(@PathVariable Long id) throws PerfilNotFound{
+  public ClienteResponseDTO getClienteById(@PathVariable Long id) throws PerfilNotFound{
     return clienteService.getCliente(id);
   }
 
-  @PostMapping
-  public ResponseEntity<?> crear(@RequestBody Cliente cliente) {
-    clienteService.saveCliente(cliente);
-    return ResponseEntity.ok("cliente creado");
+  @PostMapping("/add")
+  public ResponseEntity<?> crear(@Valid @RequestBody ClienteRequestDTO clienteRequestDTO, BindingResult result) {
+    if(result.hasErrors()){
+      Map<String, String> errores = new HashMap<>();
+      result.getFieldErrors().forEach(error ->
+              errores.put(error.getField(),error.getDefaultMessage()));
+      return ResponseEntity.badRequest().body(errores);
+    }
+    ClienteResponseDTO clienteResponseDTO = clienteService.saveCliente(clienteRequestDTO);
+    return ResponseEntity.status(HttpStatus.CREATED).body(clienteResponseDTO);
   }
 
   @DeleteMapping("/{id}")
