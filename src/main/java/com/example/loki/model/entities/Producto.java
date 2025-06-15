@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -33,4 +34,7 @@ public class Producto {
     @Column(nullable = false)
     private Integer stock;
     private LocalDate fechaAlta;
+
+    @OneToMany(mappedBy = "producto")
+    private List<Oferta> ofertas;
 }

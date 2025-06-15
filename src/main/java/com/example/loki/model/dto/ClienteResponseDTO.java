@@ -1,6 +1,9 @@
 package com.example.loki.model.dto;
 
+import com.example.loki.model.entities.Oferta;
 import lombok.*;
+
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -11,4 +14,5 @@ public class ClienteResponseDTO {
     private String nombre;
     private String apellido;
     private String correo;
+    private List<Oferta> ofertas;
 }

@@ -24,10 +24,8 @@ public class VendedorController {
   private VendedorService vendedorService;
 
   @GetMapping
-  public List<String> getVendedor(){
-    return vendedorService.getVendedores()
-            .stream().map(x -> x.toString())
-            .toList();
+  public List<VendedorResponseDTO> getVendedor(){
+    return vendedorService.getVendedores();
   }
   @GetMapping("/{id}")
   public String getVendedorById(@PathVariable Long id) throws PerfilNotFound{

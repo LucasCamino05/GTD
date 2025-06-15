@@ -1,8 +1,10 @@
 package com.example.loki.model.dto;
 
+import com.example.loki.model.entities.Oferta;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,5 +18,5 @@ public class VendedorResponseDTO {
     private LocalDate fecha_alta;
     private String cvu;
     private String alias;
-
+    private List<Oferta> ofertas;
 }

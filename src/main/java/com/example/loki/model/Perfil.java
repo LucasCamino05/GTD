@@ -15,8 +15,12 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @ToString
 public abstract class Perfil {
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "perfil_seq_gen")
+    @SequenceGenerator(
+            name = "perfil_seq_gen",
+            sequenceName = "perfil_seq_gen",
+            allocationSize = 1
+    )
     private Long id;
 
     private String nombre;
