@@ -2,30 +2,52 @@ package com.example.loki.model.entities;
 
 import com.example.loki.model.Cliente;
 import com.example.loki.model.Vendedor;
+import com.example.loki.model.enums.EstadoOferta;
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+
+import java.time.LocalDate;
+import java.util.HashMap;
 
 @Entity
 @Table(name = "ofertas")
-@Getter
-@Setter
-@EqualsAndHashCode
+@Data
 public class Oferta {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_oferta;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(
+            name = "oferta_seq_gen",
+            sequenceName = "oferta_seq",
+            allocationSize = 1
+    )
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "id_cliente")
+    @JoinColumn(name = "id")
     private Cliente cliente;
 
     @ManyToOne
-    @JoinColumn(name = "id_vendedor")
+    @JoinColumn(name = "id")
     private Vendedor vendedor;
 
     @ManyToOne
-    @JoinColumn(name = "id_producto")
+    @JoinColumn(name = "id")
     private Producto producto;
+
+    private LocalDate fecha;
+
+    @ElementCollection
+    @CollectionTable(name = "oferta_cliente", joinColumns = @JoinColumn(name = "oferta_id"))
+    @MapKeyColumn(name = "nro_oferta")
+    @Column(name = "monto")
+    private HashMap<Integer, Double> ofertaCliente;
+
+    @ElementCollection
+    @CollectionTable(name = "contraoferta_vendedor", joinColumns = @JoinColumn(name = "oferta_id"))
+    @MapKeyColumn(name = "nro_contraoferta")
+    @Column(name = "monto")
+    private HashMap<Integer, Double> ofertaVendedor;
+
+    @Enumerated(EnumType.STRING)
+    private EstadoOferta estado;
 }
