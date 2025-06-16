@@ -14,7 +14,7 @@ import java.util.HashMap;
 @Data
 public class Oferta {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "oferta_seq_gen")
     @SequenceGenerator(
             name = "oferta_seq_gen",
             sequenceName = "oferta_seq",
@@ -23,15 +23,15 @@ public class Oferta {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "id_cliente")
     private Cliente cliente;
 
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "id_vendedor")
     private Vendedor vendedor;
 
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "id_producto")
     private Producto producto;
 
     private LocalDate fecha;
