@@ -15,6 +15,10 @@ public class UserDetailsImpl implements UserDetails {
         this.perfil = perfil;
     }
 
+    public Perfil getPerfil(){
+        return perfil;
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;

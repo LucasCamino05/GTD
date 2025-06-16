@@ -14,5 +14,5 @@ public class ClienteResponseDTO {
     private String nombre;
     private String apellido;
     private String email;
-    private List<Oferta> ofertas;
+    //private List<Oferta> ofertas;
 }

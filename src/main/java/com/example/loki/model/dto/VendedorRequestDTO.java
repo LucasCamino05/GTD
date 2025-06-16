@@ -25,4 +25,6 @@ public class VendedorRequestDTO {
     private String cvu;
     @NotBlank(message = "El alias es obligatorio.")
     private String alias;
+    @NotBlank
+    private String pass;
 }

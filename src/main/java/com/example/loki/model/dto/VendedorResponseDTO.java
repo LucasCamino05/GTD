@@ -16,7 +16,7 @@ public class VendedorResponseDTO {
     private String apellido;
     private String email;
     private LocalDate fecha_alta;
-    private String cvu;
-    private String alias;
-    private List<Oferta> ofertas;
+//    private String cvu;
+//    private String alias;
+//    private List<Oferta> ofertas;
 }
