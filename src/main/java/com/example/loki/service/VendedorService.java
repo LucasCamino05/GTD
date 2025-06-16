@@ -19,13 +19,11 @@ import java.util.Scanner;
 
 @Service
 public class VendedorService {
-    private final Scanner input; // ESTO NO ME GUSTA TENGO QUE VER COMO LO ARREGLO.
     private final VendedorRepository vendedorRepository;
     private final VendedorMapper vendedorMapper;
 
     @Autowired
     public VendedorService(VendedorRepository vendedorRepository, VendedorMapper vendedorMapper) {
-        this.input = new Scanner(System.in);
         this.vendedorRepository = vendedorRepository;
         this.vendedorMapper = vendedorMapper;
     }

@@ -23,8 +23,8 @@ public class Vendedor extends Perfil {
   @OneToMany(mappedBy = "vendedor")
   private List<Oferta> ofertas;
 
-  public Vendedor(String nombre, String apellido, String correo, LocalDate fecha_alta, String cvu, String alias) {
-    super(nombre, apellido, correo, fecha_alta);
+  public Vendedor(String nombre, String apellido, String email, LocalDate fecha_alta, String cvu, String alias) {
+    super(nombre, apellido, email, fecha_alta);
     this.cvu = cvu;
     this.alias = alias;
   }

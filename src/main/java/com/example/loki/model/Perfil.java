@@ -1,5 +1,6 @@
 package com.example.loki.model;
 
+import com.example.loki.model.enums.Rol;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,13 +26,19 @@ public abstract class Perfil {
 
     private String nombre;
     private String apellido;
-    private String correo;
+    private String email;
+    private String pass;
+
     private LocalDate fecha_alta;
 
-    public Perfil(String nombre, String apellido, String correo, LocalDate fecha_alta) {
+
+    @Enumerated(EnumType.STRING)
+    private Rol rol;
+
+    public Perfil(String nombre, String apellido, String email, LocalDate fecha_alta) {
         this.nombre = nombre;
         this.apellido = apellido;
-        this.correo = correo;
+        this.email = email;
         this.fecha_alta = fecha_alta;
     }
 }

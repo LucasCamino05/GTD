@@ -20,7 +20,7 @@ public class VendedorRequestDTO {
     private String apellido;
     @Email
     @NotBlank (message = "El correo es obligatorio.")
-    private String correo;
+    private String email;
     @NotBlank(message = "El cvu es obligatorio.")
     private String cvu;
     @NotBlank(message = "El alias es obligatorio.")

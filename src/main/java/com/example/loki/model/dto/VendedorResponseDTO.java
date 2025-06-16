@@ -14,7 +14,7 @@ import java.util.List;
 public class VendedorResponseDTO {
     private String nombre;
     private String apellido;
-    private String correo;
+    private String email;
     private LocalDate fecha_alta;
     private String cvu;
     private String alias;

@@ -13,6 +13,6 @@ import java.util.List;
 public class ClienteResponseDTO {
     private String nombre;
     private String apellido;
-    private String correo;
+    private String email;
     private List<Oferta> ofertas;
 }
