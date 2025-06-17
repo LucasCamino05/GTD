@@ -1,7 +1,6 @@
 package com.example.loki.controller;
 
 import com.example.loki.exceptions.PerfilNotFound;
-import com.example.loki.model.Vendedor;
 import com.example.loki.model.dto.VendedorRequestDTO;
 import com.example.loki.model.dto.VendedorResponseDTO;
 import com.example.loki.service.VendedorService;
@@ -24,10 +23,8 @@ public class VendedorController {
   private VendedorService vendedorService;
 
   @GetMapping
-  public List<String> getVendedor(){
-    return vendedorService.getVendedores()
-            .stream().map(x -> x.toString())
-            .toList();
+  public List<VendedorResponseDTO> getVendedor(){
+    return vendedorService.getVendedores();
   }
   @GetMapping("/{id}")
   public String getVendedorById(@PathVariable Long id) throws PerfilNotFound{

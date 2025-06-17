@@ -16,5 +16,7 @@ public class ClienteRequestDTO {
     private String apellido;
     @Email
     @NotBlank (message = "El correo es obligatorio.")
-    private String correo;
+    private String email;
+    @NotBlank
+    private String password;
 }

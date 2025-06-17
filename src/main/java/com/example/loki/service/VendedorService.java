@@ -3,8 +3,9 @@ package com.example.loki.service;
 import com.example.loki.exceptions.PerfilNotFound;
 import com.example.loki.model.dto.VendedorRequestDTO;
 import com.example.loki.model.dto.VendedorResponseDTO;
+import com.example.loki.model.enums.Rol;
 import com.example.loki.model.mappers.VendedorMapper;
-import com.example.loki.model.Vendedor;
+import com.example.loki.model.entities.Vendedor;
 import com.example.loki.repository.VendedorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,17 +16,14 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Scanner;
 
 @Service
 public class VendedorService {
-    private final Scanner input; // ESTO NO ME GUSTA TENGO QUE VER COMO LO ARREGLO.
     private final VendedorRepository vendedorRepository;
     private final VendedorMapper vendedorMapper;
 
     @Autowired
     public VendedorService(VendedorRepository vendedorRepository, VendedorMapper vendedorMapper) {
-        this.input = new Scanner(System.in);
         this.vendedorRepository = vendedorRepository;
         this.vendedorMapper = vendedorMapper;
     }
@@ -45,6 +43,7 @@ public class VendedorService {
 
     public VendedorResponseDTO saveVendedor(VendedorRequestDTO vendedorRequestDTO){
         Vendedor vendedor = vendedorMapper.toEntity(vendedorRequestDTO);
+        vendedor.setRol(Rol.VENDEDOR);
         vendedor.setFecha_alta(LocalDate.now());
         vendedorRepository.save(vendedor);
         

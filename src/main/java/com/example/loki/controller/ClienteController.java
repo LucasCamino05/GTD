@@ -1,7 +1,6 @@
 package com.example.loki.controller;
 
 import com.example.loki.exceptions.PerfilNotFound;
-import com.example.loki.model.Cliente;
 import com.example.loki.model.dto.ClienteRequestDTO;
 import com.example.loki.model.dto.ClienteResponseDTO;
 import com.example.loki.service.ClienteService;
