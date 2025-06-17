@@ -22,5 +22,5 @@ public class VendedorRequestDTO {
     @NotBlank(message = "El alias es obligatorio.")
     private String alias;
     @NotBlank
-    private String pass;
+    private String password;
 }

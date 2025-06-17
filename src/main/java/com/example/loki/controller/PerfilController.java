@@ -1,14 +1,11 @@
 package com.example.loki.controller;
 
-import com.example.loki.model.Cliente;
-import com.example.loki.model.Perfil;
-import com.example.loki.model.Vendedor;
+import com.example.loki.model.entities.Cliente;
+import com.example.loki.model.entities.Perfil;
+import com.example.loki.model.entities.Vendedor;
 import com.example.loki.model.dto.*;
-import com.example.loki.model.enums.Rol;
-import com.example.loki.repository.PerfilRepository;
 import com.example.loki.security.JwtService;
 import com.example.loki.security.UserDetailsImpl;
-import com.example.loki.security.UserDetailsServiceImpl;
 import com.example.loki.service.ClienteService;
 import com.example.loki.service.VendedorService;
 import jakarta.validation.Valid;
@@ -18,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -61,7 +57,7 @@ public class PerfilController {
             return ResponseEntity.badRequest().body(errores);
         }
 
-        clienteRequestDTO.setPass(passwordEncoder.encode(clienteRequestDTO.getPass()));
+        clienteRequestDTO.setPassword(passwordEncoder.encode(clienteRequestDTO.getPassword()));
 
         ClienteResponseDTO guardado = clienteService.saveCliente(clienteRequestDTO);
 
@@ -80,7 +76,7 @@ public class PerfilController {
             return ResponseEntity.badRequest().body(errores);
         }
 
-        vendedorRequestDTO.setPass(passwordEncoder.encode(vendedorRequestDTO.getPass()));
+        vendedorRequestDTO.setPassword(passwordEncoder.encode(vendedorRequestDTO.getPassword()));
 
         VendedorResponseDTO guardado = vendedorService.saveVendedor(vendedorRequestDTO);
 

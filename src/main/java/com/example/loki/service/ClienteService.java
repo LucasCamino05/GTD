@@ -1,7 +1,7 @@
 package com.example.loki.service;
 
 import com.example.loki.exceptions.PerfilNotFound;
-import com.example.loki.model.Cliente;
+import com.example.loki.model.entities.Cliente;
 import com.example.loki.model.dto.ClienteRequestDTO;
 import com.example.loki.model.dto.ClienteResponseDTO;
 import com.example.loki.model.enums.Rol;

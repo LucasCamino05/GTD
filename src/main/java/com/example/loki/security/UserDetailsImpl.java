@@ -1,6 +1,6 @@
 package com.example.loki.security;
 
-import com.example.loki.model.Perfil;
+import com.example.loki.model.entities.Perfil;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -46,7 +46,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getPassword() {
-        return perfil.getPass();
+        return perfil.getPassword();
     }
 
     @Override

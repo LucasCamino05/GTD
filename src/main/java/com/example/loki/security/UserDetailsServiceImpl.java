@@ -1,6 +1,6 @@
 package com.example.loki.security;
 
-import com.example.loki.model.Perfil;
+import com.example.loki.model.entities.Perfil;
 import com.example.loki.repository.PerfilRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

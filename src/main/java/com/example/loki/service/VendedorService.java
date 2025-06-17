@@ -5,7 +5,7 @@ import com.example.loki.model.dto.VendedorRequestDTO;
 import com.example.loki.model.dto.VendedorResponseDTO;
 import com.example.loki.model.enums.Rol;
 import com.example.loki.model.mappers.VendedorMapper;
-import com.example.loki.model.Vendedor;
+import com.example.loki.model.entities.Vendedor;
 import com.example.loki.repository.VendedorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Scanner;
 
 @Service
 public class VendedorService {

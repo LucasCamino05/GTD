@@ -1,4 +1,4 @@
-package com.example.loki.model;
+package com.example.loki.model.entities;
 
 import com.example.loki.model.enums.Rol;
 import jakarta.persistence.*;
@@ -27,7 +27,7 @@ public abstract class Perfil {
     private String nombre;
     private String apellido;
     private String email;
-    private String pass;
+    private String password;
 
     private LocalDate fecha_alta;
 

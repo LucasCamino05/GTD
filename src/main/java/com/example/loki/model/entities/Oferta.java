@@ -1,7 +1,5 @@
 package com.example.loki.model.entities;
 
-import com.example.loki.model.Cliente;
-import com.example.loki.model.Vendedor;
 import com.example.loki.model.enums.EstadoOferta;
 import jakarta.persistence.*;
 import lombok.Data;

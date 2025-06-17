@@ -1,7 +1,6 @@
 package com.example.loki.controller;
 
 import com.example.loki.exceptions.PerfilNotFound;
-import com.example.loki.model.Vendedor;
 import com.example.loki.model.dto.VendedorRequestDTO;
 import com.example.loki.model.dto.VendedorResponseDTO;
 import com.example.loki.service.VendedorService;

@@ -1,6 +1,5 @@
-package com.example.loki.model;
+package com.example.loki.model.entities;
 
-import com.example.loki.model.entities.Oferta;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
