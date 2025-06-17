@@ -35,6 +35,10 @@ public class Producto {
     private Integer stock;
     private LocalDate fechaAlta;
 
-    @OneToMany(mappedBy = "producto")
-    private List<Oferta> ofertas;
+    @ManyToOne
+    @JoinColumn(name = "vendedor_id")
+    private Vendedor vendedor;
+
+//    @OneToMany(mappedBy = "producto")
+//    private List<Oferta> ofertas;
 }

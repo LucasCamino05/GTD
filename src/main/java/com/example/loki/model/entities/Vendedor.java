@@ -1,11 +1,10 @@
 package com.example.loki.model.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -19,6 +18,12 @@ public class Vendedor extends Perfil {
   private String cvu;
   private String alias;
 
+  // OPCIONAL PERO SIRVE PARA CREAR UN METODO PARA QUE EL VENDEDOR VEA TODOS SUS PRODUCTOS
+  // http://localhost:8080/api/vendedor/{id}/mis-productos
+  @OneToMany(mappedBy = "vendedor", cascade = CascadeType.ALL)
+  private List<Producto> productos = new ArrayList<>();
+
+  // http://localhost:8080/api/vendedor/{id}/mis-ofertas
   @OneToMany(mappedBy = "vendedor")
   private List<Oferta> ofertas;
 
@@ -27,5 +32,4 @@ public class Vendedor extends Perfil {
     this.cvu = cvu;
     this.alias = alias;
   }
-
 }
