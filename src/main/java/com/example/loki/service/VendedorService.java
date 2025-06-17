@@ -3,6 +3,7 @@ package com.example.loki.service;
 import com.example.loki.exceptions.PerfilNotFound;
 import com.example.loki.model.dto.VendedorRequestDTO;
 import com.example.loki.model.dto.VendedorResponseDTO;
+import com.example.loki.model.enums.Rol;
 import com.example.loki.model.mappers.VendedorMapper;
 import com.example.loki.model.Vendedor;
 import com.example.loki.repository.VendedorRepository;
@@ -43,6 +44,7 @@ public class VendedorService {
 
     public VendedorResponseDTO saveVendedor(VendedorRequestDTO vendedorRequestDTO){
         Vendedor vendedor = vendedorMapper.toEntity(vendedorRequestDTO);
+        vendedor.setRol(Rol.VENDEDOR);
         vendedor.setFecha_alta(LocalDate.now());
         vendedorRepository.save(vendedor);
         

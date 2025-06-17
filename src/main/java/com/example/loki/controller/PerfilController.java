@@ -42,8 +42,9 @@ public class PerfilController {
                 new UsernamePasswordAuthenticationToken(perfilRequestDTO.getEmail(), perfilRequestDTO.getPassword())
         );
 
-        Perfil perfil = (Perfil) auth.getPrincipal();
-        UserDetails userDetails = new UserDetailsImpl(perfil);
+        UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
+        Perfil perfil = userDetails.getPerfil();
+//        UserDetails userDetails = new UserDetailsImpl(perfil);
         String token = jwtService.generateToken(userDetails);
 
         return ResponseEntity.ok(new PerfilResponseDTO(token, perfil.getRol().name()));
