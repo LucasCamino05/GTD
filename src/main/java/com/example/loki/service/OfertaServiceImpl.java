@@ -1,10 +1,12 @@
 package com.example.loki.service;
 
+import com.example.loki.exceptions.NotFoundException;
 import com.example.loki.exceptions.ProductoNoEncontradoException;
 import com.example.loki.model.dto.OfertaRequestDTO;
 import com.example.loki.model.dto.OfertaResponseDTO;
 import com.example.loki.model.entities.Cliente;
 import com.example.loki.model.entities.Oferta;
+import com.example.loki.model.entities.Perfil;
 import com.example.loki.model.entities.Producto;
 import com.example.loki.model.enums.EstadoOferta;
 import com.example.loki.model.enums.Rol;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -69,5 +72,43 @@ public class OfertaServiceImpl implements OfertaService{
     @Override
     public void updateOferta(Long id, Double nuevoPrecio) {
 
+    }
+
+//   LO HAGO ASI POR SI QUEREMOS AGREGAR ESO DE QUIEN ACEPTA O QUIEN RECHAZA LA OFERTA.
+
+    public OfertaResponseDTO rechazarOferta(Long id, Perfil perfil) throws NotFoundException {
+        Oferta oferta = getOfertaById(id);
+        if(perfil.getRol().equals(Rol.CLIENTE)){
+            oferta.setEstado(EstadoOferta.CANCELADA);
+        }
+        else if (perfil.getRol().equals(Rol.VENDEDOR)){
+            oferta.setEstado(EstadoOferta.CANCELADA);
+        }
+        return mapper.ofertaToDTO(oferta);
+    }
+
+    public OfertaResponseDTO aceptarOferta(Long id, Perfil perfil) throws NotFoundException{
+        Oferta oferta = getOfertaById(id);
+        if(perfil.getRol().equals(Rol.CLIENTE)){
+            oferta.setEstado(EstadoOferta.ACEPTADA);
+        }
+        else if (perfil.getRol().equals(Rol.VENDEDOR)){
+            oferta.setEstado(EstadoOferta.ACEPTADA);
+        }
+        return mapper.ofertaToDTO(oferta);
+    }
+
+    public List<OfertaResponseDTO> getAllOfertasByPerfilID(Long id, Rol rol) {
+        List<OfertaResponseDTO> misOfertas = new ArrayList<>();
+        if(rol.equals(Rol.CLIENTE)) {
+            ofertaRepository.findAll().stream()
+                    .filter(o -> o.getCliente()
+                            .getId().equals(id)).forEach(o -> misOfertas.add(mapper.ofertaToDTO(o)));
+        } else if (rol.equals(Rol.VENDEDOR)) {
+            ofertaRepository.findAll().stream()
+                    .filter(o -> o.getVendedor()
+                            .getId().equals(id)).forEach(o -> misOfertas.add(mapper.ofertaToDTO(o)));
+        }
+        return misOfertas;
     }
 }
