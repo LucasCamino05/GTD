@@ -1,26 +1,33 @@
 package com.example.loki.service;
 
-import com.example.loki.exceptions.NotFoundException;
+import com.example.loki.exceptions.ProductoNoEncontradoException;
+import com.example.loki.model.dto.OfertaRequestDTO;
+import com.example.loki.model.dto.OfertaResponseDTO;
 import com.example.loki.model.entities.Cliente;
 import com.example.loki.model.entities.Oferta;
-import com.example.loki.model.entities.Perfil;
-import com.example.loki.model.entities.Vendedor;
+import com.example.loki.model.entities.Producto;
 import com.example.loki.model.enums.EstadoOferta;
+import com.example.loki.model.enums.Rol;
+import com.example.loki.model.mappers.OfertaMapper;
 import com.example.loki.repository.OfertaRepository;
-import jakarta.transaction.Transactional;
+import com.example.loki.repository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
 public class OfertaServiceImpl implements OfertaService{
-    private final OfertaRepository repository;
+    private final OfertaMapper mapper;
+    private final ProductoRepository productoRepository;
+    private final OfertaRepository ofertaRepository;
 
     @Autowired
-    public OfertaServiceImpl(OfertaRepository repository){
-        this.repository = repository;
+    public OfertaServiceImpl(OfertaRepository repository, OfertaMapper mapper, ProductoRepository productoRepository, OfertaRepository ofertaRepository) {
+        this.mapper = mapper;
+        this.productoRepository = productoRepository;
+        this.ofertaRepository = ofertaRepository;
     }
 
     @Override
@@ -34,8 +41,24 @@ public class OfertaServiceImpl implements OfertaService{
     }
 
     @Override
-    public Oferta createOferta(Oferta oferta) {
-        return null;
+    public OfertaResponseDTO crearOferta(OfertaRequestDTO ofertaRequestDTO, Cliente cliente) throws ProductoNoEncontradoException {
+        Producto producto = productoRepository.findById(ofertaRequestDTO.getIdProducto())
+                .orElseThrow(() -> new ProductoNoEncontradoException("Producto no encontrado"));
+
+        Oferta oferta = new Oferta();
+
+        oferta.setProducto(producto);
+        oferta.setVendedor(producto.getVendedor());
+        oferta.setCliente(cliente);
+
+        oferta.setFecha(LocalDate.now());
+        oferta.setEstado(EstadoOferta.EN_CURSO);
+
+        oferta.agregarPrecio(cliente.getRol(), ofertaRequestDTO.getPrecio());
+
+        Oferta guardado = ofertaRepository.save(oferta);
+
+        return mapper.ofertaToDTO(guardado);
     }
 
     @Override
@@ -46,35 +69,5 @@ public class OfertaServiceImpl implements OfertaService{
     @Override
     public void updateOferta(Long id, Double nuevoPrecio) {
 
-    }
-
-    @Transactional
-    public Oferta aceptarOferta(Long ofertaID, Perfil perfil) throws NotFoundException, AuthorizationServiceException {
-        Oferta oferta = repository.findById(ofertaID)
-                .orElseThrow(() -> new NotFoundException("No se encontro ninguna oferta."));
-        if(perfil instanceof Cliente && oferta.getCliente().getId().equals(perfil.getId())){
-            oferta.setEstado(EstadoOferta.ACEPTADA);
-        } else if (perfil instanceof Vendedor && oferta.getVendedor().getId().equals(perfil.getId())) {
-            oferta.setEstado(EstadoOferta.ACEPTADA);
-        }else{
-            throw new AuthorizationServiceException("No es posible aceptar la oferta.");
-        }
-
-        return repository.save(oferta);
-    }
-
-    @Transactional
-    public Oferta rechazarOferta(Long ofertaID, Perfil perfil) throws NotFoundException, AuthorizationServiceException {
-        Oferta oferta = repository.findById(ofertaID)
-                .orElseThrow(() -> new NotFoundException("No se encontro ninguna oferta."));
-        if(perfil instanceof Cliente && oferta.getCliente().getId().equals(perfil.getId())){
-            oferta.setEstado(EstadoOferta.CANCELADA);
-        } else if (perfil instanceof Vendedor && oferta.getVendedor().getId().equals(perfil.getId())) {
-            oferta.setEstado(EstadoOferta.CANCELADA);
-        }else{
-            throw new AuthorizationServiceException("No es posible aceptar la oferta.");
-        }
-
-        return repository.save(oferta);
     }
 }

@@ -31,7 +31,6 @@ public abstract class Perfil {
 
     private LocalDate fecha_alta;
 
-
     @Enumerated(EnumType.STRING)
     private Rol rol;
 

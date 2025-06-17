@@ -1,6 +1,7 @@
 package com.example.loki.model.entities;
 
 import com.example.loki.model.enums.EstadoOferta;
+import com.example.loki.model.enums.Rol;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -35,17 +36,22 @@ public class Oferta {
     private LocalDate fecha;
 
     @ElementCollection
-    @CollectionTable(name = "oferta_cliente", joinColumns = @JoinColumn(name = "oferta_id"))
-    @MapKeyColumn(name = "nro_oferta")
+    @CollectionTable(name = "negociacion", joinColumns = @JoinColumn(name = "negociacion_id"))
+    @MapKeyColumn(name = "rol")
     @Column(name = "monto")
-    private HashMap<Integer, Double> ofertaCliente;
+    private HashMap<Rol, Double> ofertas;
 
-    @ElementCollection
-    @CollectionTable(name = "contraoferta_vendedor", joinColumns = @JoinColumn(name = "oferta_id"))
-    @MapKeyColumn(name = "nro_contraoferta")
-    @Column(name = "monto")
-    private HashMap<Integer, Double> ofertaVendedor;
+//    @ElementCollection
+//    @CollectionTable(name = "contraoferta_vendedor", joinColumns = @JoinColumn(name = "oferta_id"))
+//    @MapKeyColumn(name = "nro_contraoferta")
+//    @Column(name = "monto")
+//    private HashMap<Integer, Double> ofertaVendedor;
 
     @Enumerated(EnumType.STRING)
     private EstadoOferta estado;
+
+
+    public void agregarPrecio(Rol rol, Double precio) {
+        ofertas.put(rol, precio);
+    }
 }
