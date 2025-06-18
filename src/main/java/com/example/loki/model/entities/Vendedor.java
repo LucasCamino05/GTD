@@ -25,7 +25,7 @@ public class Vendedor extends Perfil {
 
   // http://localhost:8080/api/vendedor/{id}/mis-ofertas
   @OneToMany(mappedBy = "vendedor")
-  private List<Oferta> ofertas;
+  private List<Oferta> ofertas = new ArrayList<>();
 
   public Vendedor(String nombre, String apellido, String email, LocalDate fecha_alta, String cvu, String alias) {
     super(nombre, apellido, email, fecha_alta);
