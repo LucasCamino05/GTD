@@ -33,6 +33,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/api/productos/**").authenticated()
                         .requestMatchers("/api/ofertas/**").authenticated()
+                        .requestMatchers("/api/notificaciones/**").authenticated()
                         .requestMatchers("/api/ofertas/crear").hasRole(Rol.CLIENTE.toString())
                         .requestMatchers("/api/productos/crear").hasRole(Rol.VENDEDOR.toString())
                         .requestMatchers("/api/productos/eliminar/**").hasRole(Rol.VENDEDOR.toString())

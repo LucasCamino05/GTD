@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -35,6 +37,9 @@ public abstract class Perfil {
 
     @Enumerated(EnumType.STRING)
     private Rol rol;
+
+    @OneToMany(mappedBy = "perfil")
+    private List<Notificacion> notificaciones = new ArrayList<>();
 
     public Perfil(String nombre, String apellido, String email, LocalDate fecha_alta) {
         this.nombre = nombre;

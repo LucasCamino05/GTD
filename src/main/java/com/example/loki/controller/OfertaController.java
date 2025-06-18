@@ -8,6 +8,7 @@ import com.example.loki.model.dto.OfertaResponseDTO;
 import com.example.loki.model.entities.Cliente;
 import com.example.loki.model.entities.Perfil;
 import com.example.loki.security.UserDetailsImpl;
+import com.example.loki.service.NotificacionService;
 import com.example.loki.service.OfertaServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +26,12 @@ import java.util.Map;
 @RequestMapping("api/ofertas")
 public class OfertaController{
     private final OfertaServiceImpl ofertaService;
+    private final NotificacionService notificacionService;
 
     @Autowired
-    public OfertaController(OfertaServiceImpl ofertaService){
+    public OfertaController(OfertaServiceImpl ofertaService, NotificacionService notificacionService){
         this.ofertaService = ofertaService;
+        this.notificacionService = notificacionService;
     }
 
     @PostMapping("/crear")
@@ -50,7 +53,6 @@ public class OfertaController{
 
         try{
             OfertaResponseDTO ofertaResponseDTO = ofertaService.crearOferta(ofertaRequestDTO, (Cliente) perfil);
-            // CREAR NOTIFICACION
             return ResponseEntity.status(HttpStatus.CREATED).body(ofertaResponseDTO);
         }catch (ProductoNoEncontradoException p){
             return ResponseEntity.badRequest().body(p.getMessage());
