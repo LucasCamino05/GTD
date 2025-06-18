@@ -13,12 +13,10 @@ import com.example.loki.repository.OfertaRepository;
 import com.example.loki.repository.PerfilRepository;
 import com.example.loki.repository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class OfertaServiceImpl implements OfertaService{
@@ -28,7 +26,7 @@ public class OfertaServiceImpl implements OfertaService{
     private final PerfilRepository perfilRepository;
 
     @Autowired
-    public OfertaServiceImpl(OfertaRepository repository, OfertaMapper mapper, ProductoRepository productoRepository, OfertaRepository ofertaRepository, PerfilRepository perfilRepository) {
+    public OfertaServiceImpl(OfertaMapper mapper, ProductoRepository productoRepository, OfertaRepository ofertaRepository, PerfilRepository perfilRepository) {
         this.mapper = mapper;
         this.productoRepository = productoRepository;
         this.ofertaRepository = ofertaRepository;
@@ -85,13 +83,12 @@ public class OfertaServiceImpl implements OfertaService{
         oferta.setFecha(LocalDate.now());
         oferta.setEstado(EstadoOferta.EN_CURSO);
 
-        System.out.println(cliente.getRol());
 
         oferta.agregarPrecio(cliente.getRol(), ofertaRequestDTO.getPrecio());
 
         Oferta guardado = ofertaRepository.save(oferta);
         OfertaResponseDTO guardadoDTO = mapper.ofertaToDTO(guardado);
-        System.out.println(guardado.getOfertas().get(cliente.getRol()) );
+
 //        guardadoDTO.setPrecioOfertado(guardado.getOfertas().get(cliente.getRol()));
         return mapper.ofertaToDTO(guardado);
     }
@@ -109,5 +106,28 @@ public class OfertaServiceImpl implements OfertaService{
         oferta.agregarPrecio(perfil.getRol(), nuevoPrecio);
 
         ofertaRepository.save(oferta);
+    }
+
+    //   LO HAGO ASI POR SI QUEREMOS AGREGAR ESO DE QUIEN ACEPTA O QUIEN RECHAZA LA OFERTA.
+    public OfertaResponseDTO rechazarOferta(Long id, Perfil perfil) throws OfertaNoEncontradaException {
+        Oferta oferta = ofertaRepository.findById(id).orElseThrow(()-> new OfertaNoEncontradaException("No encontrada"));
+        if(perfil.getRol().equals(Rol.CLIENTE)){
+            oferta.setEstado(EstadoOferta.CANCELADA);
+        }
+        else if (perfil.getRol().equals(Rol.VENDEDOR)){
+            oferta.setEstado(EstadoOferta.CANCELADA);
+        }
+        return mapper.ofertaToDTO(oferta);
+    }
+
+    public OfertaResponseDTO aceptarOferta(Long id, Perfil perfil) throws OfertaNoEncontradaException{
+        Oferta oferta = ofertaRepository.findById(id).orElseThrow(()-> new OfertaNoEncontradaException("No encontrada"));
+        if(perfil.getRol().equals(Rol.CLIENTE)){
+            oferta.setEstado(EstadoOferta.ACEPTADA);
+        }
+        else if (perfil.getRol().equals(Rol.VENDEDOR)){
+            oferta.setEstado(EstadoOferta.ACEPTADA);
+        }
+        return mapper.ofertaToDTO(oferta);
     }
 }
