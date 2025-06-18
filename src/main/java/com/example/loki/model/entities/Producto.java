@@ -3,6 +3,7 @@ package com.example.loki.model.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 @Entity
 @Table(name = "products")
 @Data
+@ToString
 @NoArgsConstructor
 public class Producto {
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "producto_seq_gen")

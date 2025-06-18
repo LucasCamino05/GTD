@@ -10,6 +10,7 @@ import com.example.loki.model.enums.EstadoOferta;
 import com.example.loki.model.enums.Rol;
 import com.example.loki.model.mappers.OfertaMapper;
 import com.example.loki.repository.OfertaRepository;
+import com.example.loki.repository.PerfilRepository;
 import com.example.loki.repository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,31 +18,48 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class OfertaServiceImpl implements OfertaService{
     private final OfertaMapper mapper;
     private final ProductoRepository productoRepository;
     private final OfertaRepository ofertaRepository;
+    private final PerfilRepository perfilRepository;
 
     @Autowired
-    public OfertaServiceImpl(OfertaRepository repository, OfertaMapper mapper, ProductoRepository productoRepository, OfertaRepository ofertaRepository) {
+    public OfertaServiceImpl(OfertaRepository repository, OfertaMapper mapper, ProductoRepository productoRepository, OfertaRepository ofertaRepository, PerfilRepository perfilRepository) {
         this.mapper = mapper;
         this.productoRepository = productoRepository;
         this.ofertaRepository = ofertaRepository;
+        this.perfilRepository = perfilRepository;
     }
 
     @Override
     public List<OfertaResponseDTO> getAllOfertas(Perfil perfil) throws PerfilNotFound {
-        if(perfil instanceof Vendedor vendedor){
-            return vendedor.getOfertas().stream()
-                    .map(mapper::ofertaToDTO)
+        if(perfil instanceof Vendedor){
+            Vendedor vendedor =(Vendedor) perfilRepository.findById(perfil.getId())
+                    .orElseThrow(() -> new PerfilNotFound("No se encontro el perfil."));
+
+            return vendedor.getOfertas()
+                    .stream()
+                    .map(oferta -> {
+                        OfertaResponseDTO dto = mapper.ofertaToDTO(oferta);
+//                        dto.setPrecioOfertado(oferta.getOfertas().get(vendedor.getRol()));
+                        return dto;
+                    })
                     .toList();
         }
 
-        if(perfil instanceof Cliente cliente){
+        if(perfil instanceof Cliente){
+            Cliente cliente = (Cliente) perfilRepository.findById(perfil.getId())
+                    .orElseThrow(() -> new PerfilNotFound("No se encontro el perfil."));
             return cliente.getOfertas().stream()
-                    .map(mapper::ofertaToDTO)
+                    .map(oferta -> {
+                        OfertaResponseDTO dto = mapper.ofertaToDTO(oferta);
+//                        dto.setPrecioOfertado(oferta.getOfertas().get(cliente.getRol()));
+                        return dto;
+                    })
                     .toList();
         }
 
@@ -67,10 +85,14 @@ public class OfertaServiceImpl implements OfertaService{
         oferta.setFecha(LocalDate.now());
         oferta.setEstado(EstadoOferta.EN_CURSO);
 
+        System.out.println(cliente.getRol());
+
         oferta.agregarPrecio(cliente.getRol(), ofertaRequestDTO.getPrecio());
 
         Oferta guardado = ofertaRepository.save(oferta);
-
+        OfertaResponseDTO guardadoDTO = mapper.ofertaToDTO(guardado);
+        System.out.println(guardado.getOfertas().get(cliente.getRol()) );
+//        guardadoDTO.setPrecioOfertado(guardado.getOfertas().get(cliente.getRol()));
         return mapper.ofertaToDTO(guardado);
     }
 
