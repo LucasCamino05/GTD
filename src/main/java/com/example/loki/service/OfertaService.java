@@ -8,7 +8,6 @@ import com.example.loki.model.dto.OfertaResponseDTO;
 import com.example.loki.model.entities.Cliente;
 import com.example.loki.model.entities.Oferta;
 import com.example.loki.model.entities.Perfil;
-import com.example.loki.model.enums.Rol;
 
 import java.util.List;
 

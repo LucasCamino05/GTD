@@ -1,6 +1,5 @@
 package com.example.loki.service;
 
-import com.example.loki.exceptions.NotFoundException;
 import com.example.loki.exceptions.OfertaNoEncontradaException;
 import com.example.loki.exceptions.PerfilNotFound;
 import com.example.loki.exceptions.ProductoNoEncontradoException;
@@ -14,12 +13,10 @@ import com.example.loki.repository.OfertaRepository;
 import com.example.loki.repository.PerfilRepository;
 import com.example.loki.repository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class OfertaServiceImpl implements OfertaService{
@@ -29,7 +26,7 @@ public class OfertaServiceImpl implements OfertaService{
     private final PerfilRepository perfilRepository;
 
     @Autowired
-    public OfertaServiceImpl(OfertaRepository repository, OfertaMapper mapper, ProductoRepository productoRepository, OfertaRepository ofertaRepository, PerfilRepository perfilRepository) {
+    public OfertaServiceImpl(OfertaMapper mapper, ProductoRepository productoRepository, OfertaRepository ofertaRepository, PerfilRepository perfilRepository) {
         this.mapper = mapper;
         this.productoRepository = productoRepository;
         this.ofertaRepository = ofertaRepository;
@@ -112,8 +109,8 @@ public class OfertaServiceImpl implements OfertaService{
     }
 
     //   LO HAGO ASI POR SI QUEREMOS AGREGAR ESO DE QUIEN ACEPTA O QUIEN RECHAZA LA OFERTA.
-    public OfertaResponseDTO rechazarOferta(Long id, Perfil perfil) throws NotFoundException {
-        Oferta oferta = ofertaRepository.findById(id).orElseThrow(()-> new NotFoundException("No encontrada"));
+    public OfertaResponseDTO rechazarOferta(Long id, Perfil perfil) throws OfertaNoEncontradaException {
+        Oferta oferta = ofertaRepository.findById(id).orElseThrow(()-> new OfertaNoEncontradaException("No encontrada"));
         if(perfil.getRol().equals(Rol.CLIENTE)){
             oferta.setEstado(EstadoOferta.CANCELADA);
         }
@@ -123,8 +120,8 @@ public class OfertaServiceImpl implements OfertaService{
         return mapper.ofertaToDTO(oferta);
     }
 
-    public OfertaResponseDTO aceptarOferta(Long id, Perfil perfil) throws NotFoundException{
-        Oferta oferta = ofertaRepository.findById(id).orElseThrow(()-> new NotFoundException("No encontrada"));
+    public OfertaResponseDTO aceptarOferta(Long id, Perfil perfil) throws OfertaNoEncontradaException{
+        Oferta oferta = ofertaRepository.findById(id).orElseThrow(()-> new OfertaNoEncontradaException("No encontrada"));
         if(perfil.getRol().equals(Rol.CLIENTE)){
             oferta.setEstado(EstadoOferta.ACEPTADA);
         }

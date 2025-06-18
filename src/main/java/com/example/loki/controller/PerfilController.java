@@ -1,9 +1,9 @@
 package com.example.loki.controller;
 
+import com.example.loki.model.dto.*;
 import com.example.loki.model.entities.Cliente;
 import com.example.loki.model.entities.Perfil;
 import com.example.loki.model.entities.Vendedor;
-import com.example.loki.model.dto.*;
 import com.example.loki.security.JwtService;
 import com.example.loki.security.UserDetailsImpl;
 import com.example.loki.service.ClienteService;
