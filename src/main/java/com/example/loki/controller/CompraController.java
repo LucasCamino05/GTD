@@ -1,6 +1,8 @@
 package com.example.loki.controller;
 
+import com.example.loki.exceptions.ProductoNoEncontradoException;
 import com.example.loki.model.dto.CompraResponseDTO;
+import com.example.loki.model.dto.ProductoResponseDTO;
 import com.example.loki.model.entities.Perfil;
 import com.example.loki.security.UserDetailsImpl;
 import com.example.loki.service.CompraServiceImpl;
@@ -38,20 +40,28 @@ public class CompraController {
 
     @PostMapping("/compra/agregar/{id}")
     public ResponseEntity<?> agregarProducto(@PathVariable Long id) {
-        compraService.agregarProducto(id);
-        return ResponseEntity.ok().body("Se agrego correctamente.");
+        try{
+            ProductoResponseDTO productoResponseDTO = compraService.agregarProducto(id);
+            return ResponseEntity.ok(productoResponseDTO);
+        } catch (ProductoNoEncontradoException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
-    @DeleteMapping("/compra/quitar/{id}")
+    @DeleteMapping("/compra/eliminar/{id}")
     public ResponseEntity<?> quitarProducto(@PathVariable Long id) {
-        compraService.quitarProducto(id);
-        return ResponseEntity.ok().build();
+        try{
+            ProductoResponseDTO productoResponseDTO = compraService.quitarProducto(id);
+            return ResponseEntity.ok(productoResponseDTO);
+        } catch (ProductoNoEncontradoException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @DeleteMapping("/compra/limpiar")
     public ResponseEntity<?> limpiarCarrito() {
         compraService.limpiarCompra();
-        return ResponseEntity.ok("Se vació el carrito");
+        return ResponseEntity.ok("Carrito vacio");
     }
 
     @PostMapping("/confirmar")
