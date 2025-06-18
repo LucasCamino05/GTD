@@ -1,12 +1,18 @@
 package com.example.loki.controller;
 
+import com.example.loki.exceptions.PerfilNotFound;
+import com.example.loki.model.dto.OfertaResponseDTO;
 import com.example.loki.model.dto.ProductoRequestDTO;
 import com.example.loki.model.dto.ProductoResponseDTO;
+import com.example.loki.model.entities.Perfil;
+import com.example.loki.model.entities.Vendedor;
+import com.example.loki.security.UserDetailsImpl;
 import com.example.loki.service.ProductoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("loki/v1/productos")
+@RequestMapping("api/productos")
 public class ProductController {
     private final ProductoService service;
 
@@ -25,8 +31,16 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<ProductoResponseDTO> getAllProducts(){
-        return service.getAllProducts();
+    public ResponseEntity<?> getAllProducts(Authentication authentication){
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        Perfil perfil = userDetails.getPerfil();
+
+        try{
+            List<ProductoResponseDTO> ofertas = service.getAllProducts(perfil);
+            return ResponseEntity.ok().body(ofertas);
+        }catch (PerfilNotFound e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
@@ -39,9 +53,18 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/add")
+    @PostMapping("/crear")
     public ResponseEntity<?> createProduct(@Valid @RequestBody ProductoRequestDTO nuevo,
-                                                             BindingResult result){
+                                           BindingResult result,
+                                           Authentication authentication){
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        Perfil perfil = userDetails.getPerfil();
+
+        if (!(perfil instanceof Vendedor)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Solo los vendedores pueden crear productos.");
+        }
+
         if(result.hasErrors()){
             Map<String, String> errores = new HashMap<>();
             result.getFieldErrors().forEach(error ->
@@ -51,21 +74,38 @@ public class ProductController {
             return ResponseEntity.badRequest().body(errores);
         }
 
-        ProductoResponseDTO guardado = service.createProduct(nuevo);
+        ProductoResponseDTO guardado = service.createProduct(nuevo, (Vendedor) perfil);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(guardado);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity deleteProduct(@PathVariable Long id){
+    @DeleteMapping("/eliminar/{id}")
+    public ResponseEntity deleteProduct(@PathVariable Long id, Authentication authentication){
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        Perfil perfil = userDetails.getPerfil();
+
+        if (!(perfil instanceof Vendedor)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Solo los vendedores pueden eliminar productos.");
+        }
+
         service.deleteProduct(id);
         return ResponseEntity.ok("Producto " + id + " eliminado.");
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/actualizar/{id}")
     public ResponseEntity updateProductoById(
             @PathVariable Long id,
-            @RequestBody Map<String, Object> modificacion){
+            @RequestBody Map<String, Object> modificacion,
+            Authentication authentication){
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        Perfil perfil = userDetails.getPerfil();
+
+        if (!(perfil instanceof Vendedor)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Solo los vendedores pueden modificar productos.");
+        }
+
         try{
             service.updateProducto(id, modificacion);
             return ResponseEntity.ok("Producto modificado correctamente.");

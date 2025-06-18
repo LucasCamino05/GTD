@@ -1,17 +1,17 @@
 package com.example.loki.service;
 
+import com.example.loki.exceptions.PerfilNotFound;
 import com.example.loki.exceptions.ProductoNoEncontradoException;
 import com.example.loki.model.dto.OfertaRequestDTO;
 import com.example.loki.model.dto.OfertaResponseDTO;
-import com.example.loki.model.entities.Cliente;
-import com.example.loki.model.entities.Oferta;
-import com.example.loki.model.entities.Producto;
+import com.example.loki.model.entities.*;
 import com.example.loki.model.enums.EstadoOferta;
 import com.example.loki.model.enums.Rol;
 import com.example.loki.model.mappers.OfertaMapper;
 import com.example.loki.repository.OfertaRepository;
 import com.example.loki.repository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -31,8 +31,20 @@ public class OfertaServiceImpl implements OfertaService{
     }
 
     @Override
-    public List<Oferta> getAllOfertas() {
-        return List.of();
+    public List<OfertaResponseDTO> getAllOfertas(Perfil perfil) throws PerfilNotFound {
+        if(perfil instanceof Vendedor vendedor){
+            return vendedor.getOfertas().stream()
+                    .map(mapper::ofertaToDTO)
+                    .toList();
+        }
+
+        if(perfil instanceof Cliente cliente){
+            return cliente.getOfertas().stream()
+                    .map(mapper::ofertaToDTO)
+                    .toList();
+        }
+
+        throw new PerfilNotFound("Perfil no encontrado.");
     }
 
     @Override

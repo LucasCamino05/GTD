@@ -1,13 +1,18 @@
 package com.example.loki.service;
 
+import com.example.loki.exceptions.PerfilNotFound;
 import com.example.loki.exceptions.ProductoNoEncontradoException;
 import com.example.loki.model.dto.ProductoRequestDTO;
 import com.example.loki.model.dto.ProductoResponseDTO;
+import com.example.loki.model.entities.Perfil;
+import com.example.loki.model.entities.Vendedor;
 import com.example.loki.model.mappers.ProductoMapper;
 import com.example.loki.model.entities.Producto;
+import com.example.loki.repository.PerfilRepository;
 import com.example.loki.repository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
@@ -20,18 +25,27 @@ import java.util.Optional;
 public class ProductoServiceImpl implements ProductoService {
     private final ProductoRepository repository;
     private final ProductoMapper productoMapper;
+    private final PerfilRepository perfilRepository;
 
     @Autowired
-    public ProductoServiceImpl(ProductoRepository repository, ProductoMapper productoMapper) {
+    public ProductoServiceImpl(ProductoRepository repository, ProductoMapper productoMapper, PerfilRepository perfilRepository) {
         this.repository = repository;
         this.productoMapper = productoMapper;
+        this.perfilRepository = perfilRepository;
     }
 
     @Override
-    public List<ProductoResponseDTO> getAllProducts() {
-        List<Producto> productos =  repository.findAll();
-        System.out.println(productos);
-        return productos.stream()
+    @Transactional(readOnly = true)
+    public List<ProductoResponseDTO> getAllProducts(Perfil perfil) throws PerfilNotFound {
+        if(perfil instanceof Vendedor){
+            Vendedor vendedor = (Vendedor) perfilRepository.findById(perfil.getId()).orElseThrow(() -> new PerfilNotFound("error"));
+            return vendedor.getProductos()
+                    .stream()
+                    .map(productoMapper::toDTOResponse)
+                    .toList();
+        }
+
+        return repository.findAll().stream()
                 .map(productoMapper::toDTOResponse)
                 .toList();
     }
@@ -47,9 +61,10 @@ public class ProductoServiceImpl implements ProductoService {
     }
 
     @Override
-    public ProductoResponseDTO createProduct(ProductoRequestDTO nuevo) {
+    public ProductoResponseDTO createProduct(ProductoRequestDTO nuevo, Vendedor vendedor) {
         Producto producto = productoMapper.toEntity(nuevo);
         producto.setFechaAlta(LocalDate.now());
+        producto.setVendedor(vendedor);
         Producto guardado = repository.save(producto);
         return productoMapper.toDTOResponse(guardado);
     }
