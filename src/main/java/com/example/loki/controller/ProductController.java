@@ -98,6 +98,7 @@ public class ProductController {
             @PathVariable Long id,
             @RequestBody Map<String, Object> modificacion,
             Authentication authentication){
+
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         Perfil perfil = userDetails.getPerfil();
 

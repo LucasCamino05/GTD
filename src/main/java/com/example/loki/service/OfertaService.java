@@ -1,5 +1,6 @@
 package com.example.loki.service;
 
+import com.example.loki.exceptions.OfertaNoEncontradaException;
 import com.example.loki.exceptions.PerfilNotFound;
 import com.example.loki.exceptions.ProductoNoEncontradoException;
 import com.example.loki.model.dto.OfertaRequestDTO;
@@ -16,5 +17,5 @@ public interface OfertaService {
     Oferta getOfertaById(Long id);
     OfertaResponseDTO crearOferta(OfertaRequestDTO ofertaRequestDTO, Cliente cliente) throws ProductoNoEncontradoException;
     void deleteOferta(Long id);
-    void updateOferta(Long id, Double nuevoPrecio);
+    void updateOferta(Long id, Double nuevoPrecio, Perfil perfil) throws OfertaNoEncontradaException;
 }

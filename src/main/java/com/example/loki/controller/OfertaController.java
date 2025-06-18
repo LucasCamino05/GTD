@@ -1,5 +1,6 @@
 package com.example.loki.controller;
 
+import com.example.loki.exceptions.OfertaNoEncontradaException;
 import com.example.loki.exceptions.PerfilNotFound;
 import com.example.loki.exceptions.ProductoNoEncontradoException;
 import com.example.loki.model.dto.OfertaRequestDTO;
@@ -70,6 +71,22 @@ public class OfertaController{
             return ResponseEntity.badRequest().body(e.getMessage());
         }
 
+    }
+
+    @PatchMapping("/actualizar/{id}")
+    public ResponseEntity updateOferta(@PathVariable Long id,
+                                       @RequestBody Double precio,
+                                       Authentication authentication){
+
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        Perfil perfil = userDetails.getPerfil();
+
+        try{
+            ofertaService.updateOferta(id, precio, perfil);
+            return ResponseEntity.ok("Oferta modificada.");
+        }catch (OfertaNoEncontradaException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
 }

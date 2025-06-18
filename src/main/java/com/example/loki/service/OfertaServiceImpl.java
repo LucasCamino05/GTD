@@ -1,5 +1,6 @@
 package com.example.loki.service;
 
+import com.example.loki.exceptions.OfertaNoEncontradaException;
 import com.example.loki.exceptions.PerfilNotFound;
 import com.example.loki.exceptions.ProductoNoEncontradoException;
 import com.example.loki.model.dto.OfertaRequestDTO;
@@ -79,7 +80,12 @@ public class OfertaServiceImpl implements OfertaService{
     }
 
     @Override
-    public void updateOferta(Long id, Double nuevoPrecio) {
+    public void updateOferta(Long id, Double nuevoPrecio, Perfil perfil) throws OfertaNoEncontradaException {
+        Oferta oferta = ofertaRepository.findById(id)
+                .orElseThrow(() -> new OfertaNoEncontradaException("Oferta no encontrada."));
 
+        oferta.agregarPrecio(perfil.getRol(), nuevoPrecio);
+
+        ofertaRepository.save(oferta);
     }
 }
