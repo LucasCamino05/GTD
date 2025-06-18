@@ -25,7 +25,7 @@ public class Compra {
     )
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "id_cliente", nullable = false)
     private Cliente cliente;
 
@@ -39,18 +39,5 @@ public class Compra {
 
     private Double precioTotal;
     private LocalDate fechaCompra;
-
-
-    @PrePersist
-    public void calcularTotalesYFecha() {
-        if (this.productos != null) {
-            this.precioTotal = productos.stream()
-                    .mapToDouble(Producto::getPrecio)
-                    .sum();
-        } else {
-            this.precioTotal = 0.0;
-        }
-        this.fechaCompra = LocalDate.now();
-    }
 
 }
