@@ -24,13 +24,15 @@ public class OfertaServiceImpl implements OfertaService{
     private final ProductoRepository productoRepository;
     private final OfertaRepository ofertaRepository;
     private final PerfilRepository perfilRepository;
+    private final NotificacionService notificacionService;
 
     @Autowired
-    public OfertaServiceImpl(OfertaMapper mapper, ProductoRepository productoRepository, OfertaRepository ofertaRepository, PerfilRepository perfilRepository) {
+    public OfertaServiceImpl(OfertaMapper mapper, ProductoRepository productoRepository, OfertaRepository ofertaRepository, PerfilRepository perfilRepository, NotificacionService notificacionService) {
         this.mapper = mapper;
         this.productoRepository = productoRepository;
         this.ofertaRepository = ofertaRepository;
         this.perfilRepository = perfilRepository;
+        this.notificacionService = notificacionService;
     }
 
     @Override
@@ -88,6 +90,11 @@ public class OfertaServiceImpl implements OfertaService{
 
         Oferta guardado = ofertaRepository.save(oferta);
         OfertaResponseDTO guardadoDTO = mapper.ofertaToDTO(guardado);
+        notificacionService.notificar(producto.getVendedor(), "Nueva oferta recibida de "
+                        + cliente.getNombre()
+                        + " "
+                        + cliente.getApellido()
+        );
 
 //        guardadoDTO.setPrecioOfertado(guardado.getOfertas().get(cliente.getRol()));
         return mapper.ofertaToDTO(guardado);
