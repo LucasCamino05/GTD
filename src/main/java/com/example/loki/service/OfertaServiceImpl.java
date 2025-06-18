@@ -113,6 +113,16 @@ public class OfertaServiceImpl implements OfertaService{
         oferta.agregarPrecio(perfil.getRol(), nuevoPrecio);
 
         ofertaRepository.save(oferta);
+
+        Perfil receptor = (perfil instanceof Cliente) ? oferta.getVendedor() : oferta.getCliente();
+        System.out.println("El que hace la oferta: " + perfil.getNombre());
+        System.out.println("El que recibe la oferta: " + receptor.getNombre());
+
+        notificacionService.notificar(receptor, "Nueva oferta recibida de "
+                + perfil.getNombre()
+                + " "
+                + perfil.getApellido()
+        );
     }
 
     //   LO HAGO ASI POR SI QUEREMOS AGREGAR ESO DE QUIEN ACEPTA O QUIEN RECHAZA LA OFERTA.
