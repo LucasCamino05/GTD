@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("loki/v1/clientes")
+@RequestMapping("api/clientes")
 public class ClienteController {
 
   @Autowired

@@ -26,11 +26,12 @@ public abstract class Perfil {
 
     private String nombre;
     private String apellido;
+
+    @Column(unique = true)
     private String email;
     private String password;
 
     private LocalDate fecha_alta;
-
 
     @Enumerated(EnumType.STRING)
     private Rol rol;

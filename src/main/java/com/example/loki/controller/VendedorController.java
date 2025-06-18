@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/loki/v1/vendedores")
+@RequestMapping("api/vendedores")
 public class VendedorController {
 
   @Autowired
@@ -26,6 +26,7 @@ public class VendedorController {
   public List<VendedorResponseDTO> getVendedor(){
     return vendedorService.getVendedores();
   }
+
   @GetMapping("/{id}")
   public String getVendedorById(@PathVariable Long id) throws PerfilNotFound{
     return vendedorService.getVendedor(id)
