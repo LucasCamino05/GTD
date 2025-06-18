@@ -26,6 +26,8 @@ public abstract class Perfil {
 
     private String nombre;
     private String apellido;
+
+    @Column(unique = true)
     private String email;
     private String password;
 

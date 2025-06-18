@@ -1,5 +1,6 @@
 package com.example.loki.security;
 
+import com.example.loki.model.enums.Rol;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,8 +31,14 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/api/cliente/**").hasRole("CLIENTE")
-                        .requestMatchers("/api/vendedor/**").hasRole("VENDEDOR")
+                        .requestMatchers("/api/productos/**").authenticated()
+                        .requestMatchers("/api/ofertas/**").authenticated()
+                        .requestMatchers("/api/ofertas/crear").hasRole(Rol.CLIENTE.toString())
+                        .requestMatchers("/api/productos/crear").hasRole(Rol.VENDEDOR.toString())
+                        .requestMatchers("/api/productos/eliminar/**").hasRole(Rol.VENDEDOR.toString())
+                        .requestMatchers("/api/productos/actualizar/**").hasRole(Rol.VENDEDOR.toString())
+                        .requestMatchers("/api/clientes/**").hasRole(Rol.CLIENTE.toString())
+                        .requestMatchers("/api/vendedores/**").hasRole(Rol.VENDEDOR.toString())
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
