@@ -1,5 +1,6 @@
 package com.example.loki.controller;
 
+import com.example.loki.exceptions.NotFoundException;
 import com.example.loki.exceptions.OfertaNoEncontradaException;
 import com.example.loki.exceptions.PerfilNotFound;
 import com.example.loki.exceptions.ProductoNoEncontradoException;
@@ -89,4 +90,29 @@ public class OfertaController{
         }
     }
 
+    @PatchMapping("/aceptar/{id}")
+    public ResponseEntity<?> aceptarOferta(@PathVariable Long id,
+                                           Authentication authentication) throws NotFoundException {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        Perfil perfil = userDetails.getPerfil();
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(ofertaService.aceptarOferta(id, perfil));
+
+        } catch (NotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PatchMapping("/rechazar/{id}")
+    public ResponseEntity<?> rechazaroferta(@PathVariable Long id,
+                                           Authentication authentication) throws NotFoundException {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        Perfil perfil = userDetails.getPerfil();
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(ofertaService.rechazarOferta(id, perfil));
+
+        } catch (NotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.loki.service;
 
+import com.example.loki.exceptions.NotFoundException;
 import com.example.loki.exceptions.OfertaNoEncontradaException;
 import com.example.loki.exceptions.PerfilNotFound;
 import com.example.loki.exceptions.ProductoNoEncontradoException;
@@ -85,13 +86,12 @@ public class OfertaServiceImpl implements OfertaService{
         oferta.setFecha(LocalDate.now());
         oferta.setEstado(EstadoOferta.EN_CURSO);
 
-        System.out.println(cliente.getRol());
 
         oferta.agregarPrecio(cliente.getRol(), ofertaRequestDTO.getPrecio());
 
         Oferta guardado = ofertaRepository.save(oferta);
         OfertaResponseDTO guardadoDTO = mapper.ofertaToDTO(guardado);
-        System.out.println(guardado.getOfertas().get(cliente.getRol()) );
+
 //        guardadoDTO.setPrecioOfertado(guardado.getOfertas().get(cliente.getRol()));
         return mapper.ofertaToDTO(guardado);
     }
@@ -109,5 +109,28 @@ public class OfertaServiceImpl implements OfertaService{
         oferta.agregarPrecio(perfil.getRol(), nuevoPrecio);
 
         ofertaRepository.save(oferta);
+    }
+
+    //   LO HAGO ASI POR SI QUEREMOS AGREGAR ESO DE QUIEN ACEPTA O QUIEN RECHAZA LA OFERTA.
+    public OfertaResponseDTO rechazarOferta(Long id, Perfil perfil) throws NotFoundException {
+        Oferta oferta = ofertaRepository.findById(id).orElseThrow(()-> new NotFoundException("No encontrada"));
+        if(perfil.getRol().equals(Rol.CLIENTE)){
+            oferta.setEstado(EstadoOferta.CANCELADA);
+        }
+        else if (perfil.getRol().equals(Rol.VENDEDOR)){
+            oferta.setEstado(EstadoOferta.CANCELADA);
+        }
+        return mapper.ofertaToDTO(oferta);
+    }
+
+    public OfertaResponseDTO aceptarOferta(Long id, Perfil perfil) throws NotFoundException{
+        Oferta oferta = ofertaRepository.findById(id).orElseThrow(()-> new NotFoundException("No encontrada"));
+        if(perfil.getRol().equals(Rol.CLIENTE)){
+            oferta.setEstado(EstadoOferta.ACEPTADA);
+        }
+        else if (perfil.getRol().equals(Rol.VENDEDOR)){
+            oferta.setEstado(EstadoOferta.ACEPTADA);
+        }
+        return mapper.ofertaToDTO(oferta);
     }
 }
