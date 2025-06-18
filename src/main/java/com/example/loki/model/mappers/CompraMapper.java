@@ -10,6 +10,6 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface CompraMapper {
-    Compra DTOtoCarrito(CompraResponseDTO compraResponseDTO);
-    CompraResponseDTO CarritotoDTO(ClienteResponseDTO cliente, List<ProductoResponseDTO> productos, Double precioFinal);
+    Compra DTOtoCompra(CompraResponseDTO compraResponseDTO);
+    CompraResponseDTO CompratoDTO(ClienteResponseDTO cliente, List<ProductoResponseDTO> productos, Double precioFinal);
 }

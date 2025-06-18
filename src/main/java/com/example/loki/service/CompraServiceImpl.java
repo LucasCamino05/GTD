@@ -98,7 +98,7 @@ public class CompraServiceImpl implements CompraService {
                 .map(productoMapper::toDTOResponse)
                 .toList();
 
-        return compraMapper.CarritotoDTO(clienteDTO, productosDTO, total);
+        return compraMapper.CompratoDTO(clienteDTO, productosDTO, total);
     }
 
     @Override
