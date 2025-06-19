@@ -18,6 +18,11 @@ public class Vendedor extends Perfil {
   private String cvu;
   private String alias;
 
+  private String accessToken;
+  private String refreshToken;
+  private Long mpUserId;
+  private Long tokenExpiresAt;
+
   // OPCIONAL PERO SIRVE PARA CREAR UN METODO PARA QUE EL VENDEDOR VEA TODOS SUS PRODUCTOS
   // http://localhost:8080/api/vendedor/{id}/mis-productos
   @OneToMany(mappedBy = "vendedor", cascade = CascadeType.ALL)
