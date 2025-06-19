@@ -4,6 +4,7 @@ import com.example.loki.model.enums.EstadoOferta;
 import com.example.loki.model.enums.Rol;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 import org.antlr.v4.runtime.misc.Pair;
 
 import java.time.LocalDate;

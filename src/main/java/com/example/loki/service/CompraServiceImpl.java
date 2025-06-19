@@ -74,7 +74,7 @@ public class CompraServiceImpl implements CompraService {
 
     @Transactional
     public void confirmarCompra(Oferta oferta) throws IllegalStateException{
-        validarClienteInicializado();
+
         Producto producto = oferta.getProducto();
         oferta.getProducto().setStock(producto.getStock()-1);
 

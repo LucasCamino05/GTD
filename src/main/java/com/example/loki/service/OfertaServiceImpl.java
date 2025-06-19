@@ -155,7 +155,8 @@ public class OfertaServiceImpl implements OfertaService{
         else if (perfil.getRol().equals(Rol.VENDEDOR)){
             oferta.setEstado(EstadoOferta.ACEPTADA);
         }
-        compraService.confirmarCompra(oferta);
+
+//        compraService.confirmarCompra(oferta);
         return mapper.ofertaToDTO(oferta);
     }
 }
