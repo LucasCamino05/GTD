@@ -72,6 +72,30 @@ public class CompraServiceImpl implements CompraService {
         limpiarCompra();
     }
 
+    @Transactional
+    public void confirmarCompra(Oferta oferta) throws IllegalStateException{
+        validarClienteInicializado();
+        Producto producto = oferta.getProducto();
+        oferta.getProducto().setStock(producto.getStock()-1);
+
+        Compra compra = new Compra();
+        compra.setCliente(this.cliente);
+        compra.setPrecioTotal(oferta.getUltimaOferta());
+
+        notificacionService.notificar(oferta.getVendedor(), "El cliente "+
+                oferta.getCliente()+
+                " acepto la oferta por el producto "+
+                oferta.getProducto().getNombre());
+        notificacionService.notificar(oferta.getCliente(), "El vendedor "+
+                oferta.getVendedor()+
+                " acepto la oferta por el producto "+
+                oferta.getProducto().getNombre());
+
+        compraRepository.save(compra);
+        limpiarCompra();
+    }
+
+
     private void notificarVendedores(List<Producto> productos) {
         for(Producto producto : productos){
             notificacionService.notificar(producto.getVendedor(),

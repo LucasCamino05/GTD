@@ -26,13 +26,21 @@ public class OfertaServiceImpl implements OfertaService{
     private final OfertaRepository ofertaRepository;
     private final PerfilRepository perfilRepository;
     private final NotificacionService notificacionService;
+    private final CompraServiceImpl compraService;
 
     @Autowired
-    public OfertaServiceImpl(OfertaMapper mapper, ProductoRepository productoRepository, OfertaRepository ofertaRepository, PerfilRepository perfilRepository, NotificacionService notificacionService) {
+    public OfertaServiceImpl(OfertaMapper mapper,
+                             ProductoRepository productoRepository,
+                             OfertaRepository ofertaRepository,
+                             PerfilRepository perfilRepository,
+                             NotificacionService notificacionService,
+                             CompraServiceImpl compraService
+    ) {
         this.mapper = mapper;
         this.productoRepository = productoRepository;
         this.ofertaRepository = ofertaRepository;
         this.perfilRepository = perfilRepository;
+        this.compraService = compraService;
         this.notificacionService = notificacionService;
     }
 
@@ -147,7 +155,7 @@ public class OfertaServiceImpl implements OfertaService{
         else if (perfil.getRol().equals(Rol.VENDEDOR)){
             oferta.setEstado(EstadoOferta.ACEPTADA);
         }
-
+        compraService.confirmarCompra(oferta);
         return mapper.ofertaToDTO(oferta);
     }
 }
