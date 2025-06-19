@@ -48,4 +48,51 @@ public class MercadoPagoController {
      notar que en el parametro 'state' se guarda el id del vendedor
      */
   }
+
+  /*
+   * luego de que el vendedor otorga los permisos
+   * la api de MP redirige a este endpoint
+   * que recibe el codigo y el state y luego llama al metodo intercambiarToken
+   */
+  @GetMapping("/oauth-callback")
+  public ResponseEntity<?> callbackOauth(@RequestParam String code, @RequestParam String state) {
+    Long vendedorId = Long.parseLong(state);
+    return intercambiarToken(code, vendedorId);
+  }
+
+  /*
+   * este metodo recibe
+   * el codigo y el vendedorId
+   * usa esos datos para
+   * obtener: access_token, refresh_token, user_id
+   * y asignar los campos correspondientes al vendedor
+   */
+  private ResponseEntity<?> intercambiarToken(String code, Long vendedorId) {
+    Map<String, Object> body = Map.of(
+        "grant_type", "authorization_code",
+        "client_id", CLIENT_ID,
+        "client_secret", CLIENT_SECRET,
+        "code", code,
+        "redirect_uri", REDIRECT_URI);
+
+    Map<String, Object> tokenResponse = WebClient.create()
+        .post()
+        .uri("https://api.mercadopago.com/oauth/token")
+        .bodyValue(body)
+        .retrieve()
+        .bodyToMono(Map.class)
+        .block();
+
+    Vendedor vendedor = vendedorRepository.findById(vendedorId).orElseThrow();
+    vendedor.setAccessToken((String) tokenResponse.get("access_token"));
+    vendedor.setRefreshToken((String) tokenResponse.get("refresh_token"));
+    vendedor.setMpUserId(Long.valueOf(tokenResponse.get("user_id").toString()));
+
+    Long expiresIn = Long.valueOf(tokenResponse.get("expires_in").toString());
+    vendedor.setTokenExpiresAt(System.currentTimeMillis() + expiresIn * 1000);
+
+    vendedorRepository.save(vendedor);
+
+    return ResponseEntity.ok("Tokens guardados correctamente");
+  }
 }
