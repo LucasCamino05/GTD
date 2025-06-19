@@ -18,12 +18,14 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 public abstract class Perfil {
-    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "perfil_seq_gen")
+    @Id
     @SequenceGenerator(
             name = "perfil_seq_gen",
             sequenceName = "perfil_seq_gen",
             allocationSize = 1
     )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "perfil_seq_gen")
+
     private Long id;
 
     private String nombre;

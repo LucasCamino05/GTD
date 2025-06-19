@@ -14,12 +14,13 @@ import java.util.List;
 @ToString
 @NoArgsConstructor
 public class Producto {
-    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "producto_seq_gen")
+    @Id
     @SequenceGenerator(
             name = "producto_seq_gen",
             sequenceName = "producto_seq",
             allocationSize = 1
     )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "producto_seq_gen")
     private Long id;
     @Column(nullable = false)
     private String nombre;
