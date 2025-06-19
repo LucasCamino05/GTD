@@ -96,7 +96,6 @@ public class OfertaController{
         Perfil perfil = userDetails.getPerfil();
         try {
             return ResponseEntity.status(HttpStatus.OK).body(ofertaService.aceptarOferta(id, perfil));
-
         } catch (OfertaNoEncontradaException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

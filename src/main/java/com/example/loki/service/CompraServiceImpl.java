@@ -26,6 +26,7 @@ public class CompraServiceImpl implements CompraService {
     private final ProductoRepository productoRepository;
     private final ClienteRepository clienteRepository;
     private final CompraRepository compraRepository;
+    private final NotificacionServiceImpl notificacionService;
     private final ClienteMapper clienteMapper;
     private final ProductoMapper productoMapper;
     private final CompraMapper compraMapper;
@@ -37,7 +38,8 @@ public class CompraServiceImpl implements CompraService {
             CompraRepository compraRepository,
             ClienteMapper clienteMapper,
             ProductoMapper productoMapper,
-            CompraMapper compraMapper) {
+            CompraMapper compraMapper,
+            NotificacionServiceImpl notificacionService) {
         this.productoRepository = productoRepository;
         this.clienteRepository = clienteRepository;
         this.compraRepository = compraRepository;
@@ -45,6 +47,7 @@ public class CompraServiceImpl implements CompraService {
         this.productoMapper = productoMapper;
         this.compraMapper = compraMapper;
         this.productos = new ArrayList<>();
+        this.notificacionService = notificacionService;
     }
 
     @Transactional
@@ -62,12 +65,36 @@ public class CompraServiceImpl implements CompraService {
         }
 
         Compra compra = new Compra();
-        compra.setCliente(cliente);
+        compra.setCliente(this.cliente);
         compra.setProductos(productos);
 
         compraRepository.save(compra);
         limpiarCompra();
     }
+
+    @Transactional
+    public void confirmarCompra(Oferta oferta) throws IllegalStateException{
+        validarClienteInicializado();
+        Producto producto = oferta.getProducto();
+        oferta.getProducto().setStock(producto.getStock()-1);
+
+        Compra compra = new Compra();
+        compra.setCliente(this.cliente);
+        compra.setPrecioTotal(oferta.getUltimaOferta());
+
+        notificacionService.notificar(oferta.getVendedor(), "El cliente "+
+                oferta.getCliente()+
+                " acepto la oferta por el producto "+
+                oferta.getProducto().getNombre());
+        notificacionService.notificar(oferta.getCliente(), "El vendedor "+
+                oferta.getVendedor()+
+                " acepto la oferta por el producto "+
+                oferta.getProducto().getNombre());
+
+        compraRepository.save(compra);
+        limpiarCompra();
+    }
+
 
     @Override
     public ProductoResponseDTO agregarProducto(Long productoId) throws ProductoNoEncontradoException {

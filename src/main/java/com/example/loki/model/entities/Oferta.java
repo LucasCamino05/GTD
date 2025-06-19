@@ -43,6 +43,7 @@ public class Oferta {
     @MapKeyColumn(name = "rol")
     @Column(name = "monto")
     private Map<Rol, Double> ofertas = new LinkedHashMap<>();
+    private Double ultimaOferta;
 
 //    @ElementCollection
 //    @CollectionTable(name = "contraoferta_vendedor", joinColumns = @JoinColumn(name = "oferta_id"))
