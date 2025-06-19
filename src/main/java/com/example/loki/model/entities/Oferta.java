@@ -16,12 +16,12 @@ import java.util.Map;
 @Data
 public class Oferta {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "oferta_seq_gen")
     @SequenceGenerator(
             name = "oferta_seq_gen",
             sequenceName = "oferta_seq",
             allocationSize = 1
     )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "oferta_seq_gen")
     private Long id;
 
     @ManyToOne

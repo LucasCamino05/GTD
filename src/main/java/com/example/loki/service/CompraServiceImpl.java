@@ -21,12 +21,12 @@ import java.util.List;
 @Service
 public class CompraServiceImpl implements CompraService {
     private final List<Producto> productos;
+    private final NotificacionService notificacionService;
     private Cliente cliente;
 
     private final ProductoRepository productoRepository;
     private final ClienteRepository clienteRepository;
     private final CompraRepository compraRepository;
-    private final NotificacionServiceImpl notificacionService;
     private final ClienteMapper clienteMapper;
     private final ProductoMapper productoMapper;
     private final CompraMapper compraMapper;
@@ -38,8 +38,7 @@ public class CompraServiceImpl implements CompraService {
             CompraRepository compraRepository,
             ClienteMapper clienteMapper,
             ProductoMapper productoMapper,
-            CompraMapper compraMapper,
-            NotificacionServiceImpl notificacionService) {
+            CompraMapper compraMapper, NotificacionService notificacionService) {
         this.productoRepository = productoRepository;
         this.clienteRepository = clienteRepository;
         this.compraRepository = compraRepository;
@@ -65,36 +64,24 @@ public class CompraServiceImpl implements CompraService {
         }
 
         Compra compra = new Compra();
-        compra.setCliente(this.cliente);
+        compra.setCliente(cliente);
         compra.setProductos(productos);
 
         compraRepository.save(compra);
+        notificarVendedores(productos);
         limpiarCompra();
     }
 
-    @Transactional
-    public void confirmarCompra(Oferta oferta) throws IllegalStateException{
-        validarClienteInicializado();
-        Producto producto = oferta.getProducto();
-        oferta.getProducto().setStock(producto.getStock()-1);
-
-        Compra compra = new Compra();
-        compra.setCliente(this.cliente);
-        compra.setPrecioTotal(oferta.getUltimaOferta());
-
-        notificacionService.notificar(oferta.getVendedor(), "El cliente "+
-                oferta.getCliente()+
-                " acepto la oferta por el producto "+
-                oferta.getProducto().getNombre());
-        notificacionService.notificar(oferta.getCliente(), "El vendedor "+
-                oferta.getVendedor()+
-                " acepto la oferta por el producto "+
-                oferta.getProducto().getNombre());
-
-        compraRepository.save(compra);
-        limpiarCompra();
+    private void notificarVendedores(List<Producto> productos) {
+        for(Producto producto : productos){
+            notificacionService.notificar(producto.getVendedor(),
+                    cliente.getNombre()
+                            + " " + cliente.getApellido()
+                            + " compro un producto por: $"
+                            + producto.getPrecio()
+            );
+        }
     }
-
 
     @Override
     public ProductoResponseDTO agregarProducto(Long productoId) throws ProductoNoEncontradoException {
