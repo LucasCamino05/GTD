@@ -72,6 +72,34 @@ public class CompraServiceImpl implements CompraService {
         limpiarCompra();
     }
 
+    @Transactional
+    public void confirmarCompra(Oferta oferta) throws IllegalStateException, IllegalAccessException, ProductoNoEncontradoException {
+        List<Producto> productoList = new ArrayList<>();
+
+        Producto producto = oferta.getProducto();
+        oferta.getProducto().setStock(producto.getStock()-1);
+        productoList.add(producto);
+        crearCompra(oferta.getCliente());
+        agregarProducto(oferta.getProducto().getId());
+
+        validarClienteInicializado();
+        notificacionService.notificar(oferta.getVendedor(), "El cliente "+
+                oferta.getCliente().getNombre()+
+                " acepto la oferta por el producto "+
+                oferta.getProducto().getNombre());
+        notificacionService.notificar(oferta.getCliente(), "El vendedor "+
+                oferta.getVendedor().getNombre()+
+                " acepto la oferta por el producto "+
+                oferta.getProducto().getNombre());
+        Compra compra = new Compra();
+        compra.setCliente(oferta.getCliente());
+        compra.setProductos(productoList);
+
+        compraRepository.save(compra);
+        limpiarCompra();
+    }
+
+
     private void notificarVendedores(List<Producto> productos) {
         for(Producto producto : productos){
             notificacionService.notificar(producto.getVendedor(),

@@ -4,6 +4,7 @@ import com.example.loki.model.enums.EstadoOferta;
 import com.example.loki.model.enums.Rol;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 import org.antlr.v4.runtime.misc.Pair;
 
 import java.time.LocalDate;
@@ -43,6 +44,7 @@ public class Oferta {
     @MapKeyColumn(name = "rol")
     @Column(name = "monto")
     private Map<Rol, Double> ofertas = new LinkedHashMap<>();
+    private Double ultimaOferta;
 
 //    @ElementCollection
 //    @CollectionTable(name = "contraoferta_vendedor", joinColumns = @JoinColumn(name = "oferta_id"))

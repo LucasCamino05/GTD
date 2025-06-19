@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -25,13 +26,21 @@ public class OfertaServiceImpl implements OfertaService{
     private final OfertaRepository ofertaRepository;
     private final PerfilRepository perfilRepository;
     private final NotificacionService notificacionService;
+    private final CompraServiceImpl compraService;
 
     @Autowired
-    public OfertaServiceImpl(OfertaMapper mapper, ProductoRepository productoRepository, OfertaRepository ofertaRepository, PerfilRepository perfilRepository, NotificacionService notificacionService) {
+    public OfertaServiceImpl(OfertaMapper mapper,
+                             ProductoRepository productoRepository,
+                             OfertaRepository ofertaRepository,
+                             PerfilRepository perfilRepository,
+                             NotificacionService notificacionService,
+                             CompraServiceImpl compraService
+    ) {
         this.mapper = mapper;
         this.productoRepository = productoRepository;
         this.ofertaRepository = ofertaRepository;
         this.perfilRepository = perfilRepository;
+        this.compraService = compraService;
         this.notificacionService = notificacionService;
     }
 
@@ -81,7 +90,7 @@ public class OfertaServiceImpl implements OfertaService{
         oferta.setProducto(producto);
         oferta.setVendedor(producto.getVendedor());
         oferta.setCliente(cliente);
-
+        oferta.setUltimaOferta(ofertaRequestDTO.getPrecio());
         oferta.setFecha(LocalDate.now());
         oferta.setEstado(EstadoOferta.EN_CURSO);
 
@@ -111,7 +120,7 @@ public class OfertaServiceImpl implements OfertaService{
                 .orElseThrow(() -> new OfertaNoEncontradaException("Oferta no encontrada."));
 
         oferta.agregarPrecio(perfil.getRol(), nuevoPrecio);
-
+        oferta.setUltimaOferta(nuevoPrecio);
         ofertaRepository.save(oferta);
 
         Perfil receptor = (perfil instanceof Cliente) ? oferta.getVendedor() : oferta.getCliente();
@@ -138,6 +147,7 @@ public class OfertaServiceImpl implements OfertaService{
     }
 
     public OfertaResponseDTO aceptarOferta(Long id, Perfil perfil) throws OfertaNoEncontradaException{
+
         Oferta oferta = ofertaRepository.findById(id).orElseThrow(()-> new OfertaNoEncontradaException("No encontrada"));
         if(perfil.getRol().equals(Rol.CLIENTE)){
             oferta.setEstado(EstadoOferta.ACEPTADA);
@@ -145,6 +155,12 @@ public class OfertaServiceImpl implements OfertaService{
         else if (perfil.getRol().equals(Rol.VENDEDOR)){
             oferta.setEstado(EstadoOferta.ACEPTADA);
         }
+        try {
+            compraService.confirmarCompra(oferta);
+        } catch (IllegalAccessException | ProductoNoEncontradoException e) {
+            System.out.println(e.getMessage());
+        }
+
         return mapper.ofertaToDTO(oferta);
     }
 }
