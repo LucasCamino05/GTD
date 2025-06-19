@@ -147,7 +147,7 @@ public class OfertaServiceImpl implements OfertaService{
     }
 
     public OfertaResponseDTO aceptarOferta(Long id, Perfil perfil) throws OfertaNoEncontradaException{
-        List<Producto> productos = new ArrayList<>();
+
         Oferta oferta = ofertaRepository.findById(id).orElseThrow(()-> new OfertaNoEncontradaException("No encontrada"));
         if(perfil.getRol().equals(Rol.CLIENTE)){
             oferta.setEstado(EstadoOferta.ACEPTADA);
@@ -155,8 +155,12 @@ public class OfertaServiceImpl implements OfertaService{
         else if (perfil.getRol().equals(Rol.VENDEDOR)){
             oferta.setEstado(EstadoOferta.ACEPTADA);
         }
+        try {
+            compraService.confirmarCompra(oferta);
+        } catch (IllegalAccessException | ProductoNoEncontradoException e) {
+            System.out.println(e.getMessage());
+        }
 
-//        compraService.confirmarCompra(oferta);
         return mapper.ofertaToDTO(oferta);
     }
 }
