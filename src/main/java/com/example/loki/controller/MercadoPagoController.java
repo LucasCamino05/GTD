@@ -95,4 +95,38 @@ public class MercadoPagoController {
 
     return ResponseEntity.ok("Tokens guardados correctamente");
   }
+
+  /*
+   * este endpoint recibe el id del vendedor como parametro
+   * y utiliza el refresh_token para actualizar sus tokens
+   */
+  @PostMapping("/refresh-token/{vendedorId}")
+  public ResponseEntity<?> refrescarToken(@PathVariable Long vendedorId) {
+    Vendedor vendedor = vendedorRepository.findById(vendedorId).orElseThrow();
+
+    Map<String, Object> body = Map.of(
+        "grant_type", "refresh_token",
+        "client_id", CLIENT_ID,
+        "client_secret", CLIENT_SECRET,
+        "refresh_token", vendedor.getRefreshToken());
+
+    Map<String, Object> tokenResponse = WebClient.create()
+        .post()
+        .uri("https://api.mercadopago.com/oauth/token")
+        .bodyValue(body)
+        .retrieve()
+        .bodyToMono(Map.class)
+        .block();
+
+    vendedor.setAccessToken((String) tokenResponse.get("access_token"));
+    vendedor.setRefreshToken((String) tokenResponse.get("refresh_token"));
+    vendedor.setMpUserId(Long.valueOf(tokenResponse.get("user_id").toString()));
+
+    Long expiresIn = Long.valueOf(tokenResponse.get("expires_in").toString());
+    vendedor.setTokenExpiresAt(System.currentTimeMillis() + expiresIn * 1000);
+
+    vendedorRepository.save(vendedor);
+
+    return ResponseEntity.ok("Tokens refrescados correctamente");
+  }
 }
