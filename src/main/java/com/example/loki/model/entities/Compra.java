@@ -17,12 +17,12 @@ import java.util.List;
 public class Compra {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "compra_seq_gen")
     @SequenceGenerator(
             name = "compra_seq_gen",
             sequenceName = "compra_seq",
             allocationSize = 1
     )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "compra_seq_gen")
     private Long id;
 
     @ManyToOne
