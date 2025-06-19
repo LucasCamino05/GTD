@@ -21,6 +21,7 @@ import java.util.List;
 @Service
 public class CompraServiceImpl implements CompraService {
     private final List<Producto> productos;
+    private final NotificacionService notificacionService;
     private Cliente cliente;
 
     private final ProductoRepository productoRepository;
@@ -37,7 +38,7 @@ public class CompraServiceImpl implements CompraService {
             CompraRepository compraRepository,
             ClienteMapper clienteMapper,
             ProductoMapper productoMapper,
-            CompraMapper compraMapper) {
+            CompraMapper compraMapper, NotificacionService notificacionService) {
         this.productoRepository = productoRepository;
         this.clienteRepository = clienteRepository;
         this.compraRepository = compraRepository;
@@ -45,6 +46,7 @@ public class CompraServiceImpl implements CompraService {
         this.productoMapper = productoMapper;
         this.compraMapper = compraMapper;
         this.productos = new ArrayList<>();
+        this.notificacionService = notificacionService;
     }
 
     @Transactional
@@ -66,7 +68,19 @@ public class CompraServiceImpl implements CompraService {
         compra.setProductos(productos);
 
         compraRepository.save(compra);
+        notificarVendedores(productos);
         limpiarCompra();
+    }
+
+    private void notificarVendedores(List<Producto> productos) {
+        for(Producto producto : productos){
+            notificacionService.notificar(producto.getVendedor(),
+                    cliente.getNombre()
+                            + " " + cliente.getApellido()
+                            + " compro un producto por: $"
+                            + producto.getPrecio()
+            );
+        }
     }
 
     @Override
