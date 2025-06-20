@@ -27,8 +27,8 @@ public class MercadoPagoController {
   private final VendedorRepository vendedorRepository;
 
   // estan en la seccion credenciales produccion
-  private final String CLIENT_ID = "<client secret>";
-  private final String CLIENT_SECRET = "<client secret>";
+  private final String CLIENT_ID = "2222509308676986";
+  private final String CLIENT_SECRET = "QdXjHAkkym2yNmvwlCcHnalELgjCW1Y3";
 
   // parece que no funciona con localhost por eso se usa render.com
   private final String REDIRECT_URI = "https://loki-6etb.onrender.com/api/oauth-callback";
@@ -42,7 +42,7 @@ public class MercadoPagoController {
         + "&response_type=code"
         + "&platform_id=mp"
         + "&redirect_uri=" + REDIRECT_URI
-        + "&state=" + vendedorId
+        + "&state=" + vendedorId;
     return ResponseEntity.ok(url);
     /*
      notar que en el parametro 'state' se guarda el id del vendedor
