@@ -31,8 +31,8 @@ public class MercadoPagoController {
   private final String CLIENT_SECRET = "QdXjHAkkym2yNmvwlCcHnalELgjCW1Y3";
 
   // parece que no funciona con localhost por eso se usa render.com
-  private final String REDIRECT_URI = "https://loki-6etb.onrender.com/api/oauth-callback";
-  private final String CODE_API = "https://loki-6etb.onrender.com/api/oauth-code";
+  private final String SITE_URL = "https://loki-6etb.onrender.com";
+  private final String REDIRECT_URI = SITE_URL + "/api/mp/oauth-callback";
 
   // devuelve url donde el vendedor otorga los permisos para recibir pagos
   @GetMapping("/auth-url/{vendedorId}")
