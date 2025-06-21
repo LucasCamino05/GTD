@@ -3,6 +3,7 @@ package com.example.loki.controller;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,7 @@ import com.example.loki.model.entities.Vendedor;
 import com.example.loki.repository.VendedorRepository;
 
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/api/mp")
@@ -69,6 +71,49 @@ public class MercadoPagoController {
    */
   private ResponseEntity<?> intercambiarToken(String code, Long vendedorId) {
     Map<String, Object> body = Map.of(
+            "grant_type", "authorization_code",
+            "client_id", CLIENT_ID,
+            "client_secret", CLIENT_SECRET,
+            "code", code,
+            "redirect_uri", REDIRECT_URI
+    );
+
+    Map<String, Object> tokenResponse;
+
+    try {
+      tokenResponse = WebClient.create()
+              .post()
+              .uri("https://api.mercadopago.com/oauth/token")
+              .bodyValue(body)
+              .retrieve()
+              .onStatus(status -> status.isError(), clientResponse ->
+                      clientResponse.bodyToMono(String.class).flatMap(errorBody ->
+                              Mono.error(new RuntimeException("Error de Mercado Pago: " + errorBody))
+                      )
+              )
+              .bodyToMono(Map.class)
+              .block();
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+              .body("Error al intercambiar el token con Mercado Pago: " + e.getMessage());
+    }
+
+    Vendedor vendedor = vendedorRepository.findById(vendedorId).orElseThrow();
+    vendedor.setAccessToken((String) tokenResponse.get("access_token"));
+    vendedor.setRefreshToken((String) tokenResponse.get("refresh_token"));
+    vendedor.setMpUserId(Long.valueOf(tokenResponse.get("user_id").toString()));
+
+    Long expiresIn = Long.valueOf(tokenResponse.get("expires_in").toString());
+    vendedor.setTokenExpiresAt(System.currentTimeMillis() + expiresIn * 1000);
+
+    vendedorRepository.save(vendedor);
+
+    return ResponseEntity.ok("Tokens guardados correctamente");
+  }
+
+  /*
+  private ResponseEntity<?> intercambiarToken(String code, Long vendedorId) {
+    Map<String, Object> body = Map.of(
         "grant_type", "authorization_code",
         "client_id", CLIENT_ID,
         "client_secret", CLIENT_SECRET,
@@ -95,6 +140,7 @@ public class MercadoPagoController {
 
     return ResponseEntity.ok("Tokens guardados correctamente");
   }
+  */
 
   /*
    * este endpoint recibe el id del vendedor como parametro
